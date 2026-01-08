@@ -3,92 +3,144 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Złotów - Glob z kominem</title>
+  <title>Złotów - Glob (dolna półkula) z kominem i Polską</title>
   <style>
     :root{
       --komin-left: 50%;
-      --komin-top: 54%;
-      --bg-top: #8fd1ff;    /* jasne niebo */
-      --bg-bottom: #1f6fb6; /* głęboki niebieski */
+      --komin-top: 68%; /* domyślnie na dolnej półkuli */
       --globe-size: min(92vmin, 900px);
+      --sky-top: #aee7ff;
+      --sky-mid: #6fbff6;
+      --sea-deep: #0f4b7c;
+      --continent: #f6e9b5;
+      --continent-shadow: rgba(0,0,0,0.06);
+
+      /* pozycja markera Polski — dostosuj jeśli trzeba */
+      --poland-left: 46%;
+      --poland-top: 36%;
     }
 
     *{box-sizing:border-box}
     body,html{
       margin:0;padding:0;height:100%;
       display:flex;align-items:center;justify-content:center;
-      background: radial-gradient(circle at 30% 20%, #c9eeff 0%, transparent 35%),
-                  linear-gradient(180deg,var(--bg-top) 0%, #76b6e6 45%, var(--bg-bottom) 100%);
+      background:
+        radial-gradient(circle at 30% 18%, rgba(255,255,255,0.14) 0%, transparent 30%),
+        linear-gradient(180deg, #cfefff 0%, #9dc7f0 40%, #4f8fc2 100%);
       font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial;
       -webkit-font-smoothing:antialiased;
     }
 
-    /* Scena: okrągły glob z horyzontem */
+    /* Kula / scena */
     .scene {
       position:relative;
       width:var(--globe-size);
       height:var(--globe-size);
       border-radius:50%;
       overflow:hidden;
-      box-shadow:
-        0 18px 40px rgba(0,0,0,0.28),
-        inset 0 8px 40px rgba(255,255,255,0.06);
       background:
-        radial-gradient(circle at 35% 20%, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.00) 40%),
-        linear-gradient(180deg, #6fc0ff 0%, #4ea0e0 45%, #2b6fb3 60%, #173e6e 100%);
-      display:block;
+        radial-gradient(circle at 35% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.00) 40%),
+        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sea-deep) 100%);
+      box-shadow: 0 28px 60px rgba(0,0,0,0.32), inset 0 6px 24px rgba(255,255,255,0.03);
+      transform: translateY(6%); /* lekko przesuń w dół, by pokazać dolną półkulę */
     }
 
-    /* Horyzont: jasna poświata i „odbicie" */
-    .scene::before {
-      content:"";
+    .horizon-glow {
       position:absolute;
       left:0;right:0;
-      top:42%;
-      height:20%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
-      filter: blur(8px);
-      transform: translateY(-30%);
+      top:48%;
+      height:36%;
+      background: radial-gradient(ellipse at 50% 45%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.00) 40%);
+      filter: blur(10px);
+      transform: translateY(-18%);
       pointer-events:none;
+      mix-blend-mode: screen;
+      opacity:0.95;
     }
-    .scene::after {
-      /* delikatne pasy przypominające atmosferę (opcja) */
-      content:"";
+
+    .earth-svg {
       position:absolute;
       inset:0;
-      background: radial-gradient(circle at 50% 10%, rgba(255,255,255,0.03), transparent 30%);
-      mix-blend-mode: screen;
+      width:100%;
+      height:100%;
       pointer-events:none;
+      transform: translateY(6%);
     }
 
-    /* Drobna „linie horyzontu" */
-    .horizon-line {
-      position:absolute;
-      left:6%;
-      right:6%;
-      top:52%;
-      height:2px;
-      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.25), rgba(255,255,255,0));
-      filter: blur(0.6px);
-      pointer-events:none;
-      opacity:0.85;
-    }
-
-    /* Komin (SVG) - umieszczony względnie względem .scene */
+    /* Komin (SVG) */
     .komin {
       position:absolute;
       left: var(--komin-left);
       top: var(--komin-top);
-      transform: translate(-50%,-100%); /* góra komina ma leżeć na „powierzchni” */
+      transform: translate(-50%,-100%); /* góra komina na powierzchni */
       width: clamp(60px, 8vmin, 140px);
-      z-index: 30;
+      z-index: 40;
       pointer-events: none;
       transition: transform .08s;
     }
     .komin.dragging {
       transform: translate(-50%,-50%) scale(1.04);
       pointer-events: auto;
-      z-index: 60;
+      z-index: 80;
+    }
+
+    /* Marker Polski */
+    .poland-marker {
+      position: absolute;
+      left: var(--poland-left);
+      top: var(--poland-top);
+      transform: translate(-50%,-50%);
+      z-index: 50;
+      pointer-events: auto;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      user-select:none;
+    }
+    .poland-pin {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffcc00;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      border: 2px solid #fff;
+      position:relative;
+    }
+    .poland-pin::after{
+      content:"";
+      position:absolute;
+      left:50%; top:100%;
+      transform:translate(-50%, -10%);
+      width:6px; height:10px;
+      background:#ffcc00;
+      border-radius:2px;
+    }
+    .poland-label {
+      background: rgba(255,255,255,0.95);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size:12px;
+      color:#0b3b66;
+      box-shadow: 0 4px 14px rgba(11,59,102,0.12);
+      white-space:nowrap;
+    }
+    /* pulsujący krąg */
+    .poland-ring {
+      position:absolute;
+      width:36px; height:36px;
+      border-radius:50%;
+      left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      background: rgba(255,204,0,0.12);
+      filter: blur(1px);
+      animation: pulse 2.4s infinite;
+      z-index:-1;
+    }
+    @keyframes pulse {
+      0% { transform: translate(-50%,-50%) scale(0.9); opacity:0.9; }
+      70% { transform: translate(-50%,-50%) scale(1.7); opacity:0; }
+      100% { transform: translate(-50%,-50%) scale(1.8); opacity:0; }
     }
 
     /* panel sterujący */
@@ -102,26 +154,48 @@
       box-shadow:0 8px 20px rgba(0,0,0,0.12);
       z-index:9999;
       font-size:13px;
+      display:flex; flex-direction:column; gap:6px;
     }
-    .controls button{ margin:4px 6px 4px 0; padding:6px 8px; cursor:pointer; }
+    .controls .row { display:flex; gap:6px; align-items:center; }
+    .controls button{ padding:6px 8px; cursor:pointer; }
 
-    /* preferencje ruchu */
+    .controls input[type="range"]{ width:120px; }
+
     @media (prefers-reduced-motion: reduce){
       .komin { transition: none; }
-    }
-
-    /* pomocnicze: centrowanie sceny w małych wysokościach */
-    @media (max-height:520px){
-      .scene{ width:clamp(360px, 80vmin, 600px); height:clamp(360px, 80vmin, 600px); }
+      .poland-ring { animation: none; opacity:0.6; transform:translate(-50%,-50%) scale(1.15); }
     }
   </style>
 </head>
 <body>
 
-  <div class="scene" id="scene" role="img" aria-label="Stylizowany glob z horyzontem">
-    <div class="horizon-line" aria-hidden="true"></div>
+  <div class="scene" id="scene" role="img" aria-label="Stylizowana kula - dolna półkula z kontynentami i markerem Polski">
+    <div class="horizon-glow" aria-hidden="true"></div>
 
-    <!-- Komin SVG (ten sam co wcześniej) -->
+    <!-- SVG z bajkowymi kontynentami -->
+    <svg class="earth-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="seaShade" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#4aa0dd" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#0f4b7c" stop-opacity="0.8"/>
+        </linearGradient>
+      </defs>
+
+      <circle cx="50" cy="50" r="48" fill="url(#seaShade)" opacity="0.95" />
+
+      <g transform="translate(0,6)">
+        <path class="continent" d="M22 58 C18 52, 26 44, 34 46 C42 48, 46 54, 54 52 C62 50, 70 56, 66 62 C62 68, 54 70, 46 72 C38 74, 28 72, 24 66 C22 62, 22 58, 22 58 Z"/>
+        <path class="continent" d="M66 68 C68 66, 72 66, 74 68 C76 70, 74 72, 72 72 C70 72, 68 70, 66 68 Z" />
+        <path class="continent" d="M14 68 C16 66, 18 64, 20 65 C22 66, 20 69, 18 70 C16 71, 14 70, 14 68 Z" />
+        <path class="continent" d="M4 44 C8 38, 16 34, 24 36 C30 38, 28 44, 26 50 C24 56, 18 58, 12 58 C8 58, 6 52, 4 44 Z"/>
+        <path class="continent" d="M56 46 C62 42, 70 40, 76 44 C80 48, 78 54, 74 58 C70 62, 64 62, 58 60 C54 58, 52 52, 56 46 Z"/>
+        <path class="continent-outline" d="M22 58 C18 52, 26 44, 34 46 C42 48, 46 54, 54 52 C62 50, 70 56, 66 62 C62 68, 54 70, 46 72 C38 74, 28 72, 24 66 C22 62, 22 58, 22 58 Z"/>
+      </g>
+
+      <ellipse cx="46" cy="32" rx="28" ry="12" fill="rgba(255,255,255,0.06)" />
+    </svg>
+
+    <!-- Komin SVG -->
     <svg class="komin" id="komin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-hidden="false" focusable="true">
       <defs>
         <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
@@ -135,8 +209,7 @@
         <rect x="85" y="100" width="30" height="15" fill="#c62828"/>
         <rect x="85" y="115" width="30" height="15" fill="#ffffff"/>
         <rect x="85" y="130" width="30" height="15" fill="#c62828"/>
-        <rect x="85" y="70" width="30" height="90" rx="4" ry="4"
-              fill="none" stroke="#8a1f1f" stroke-width="2"/>
+        <rect x="85" y="70" width="30" height="90" rx="4" ry="4" fill="none" stroke="#8a1f1f" stroke-width="2"/>
         <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
       </g>
 
@@ -146,13 +219,23 @@
         <circle cx="95"  cy="40" r="6" fill="#f5f5f5"/>
       </g>
     </svg>
+
+    <!-- Marker Polski -->
+    <div class="poland-marker" id="poland" title="Polska" aria-label="Polska">
+      <div class="poland-ring" aria-hidden="true"></div>
+      <div class="poland-pin" aria-hidden="true"></div>
+      <div class="poland-label">Polska</div>
+    </div>
+
   </div>
 
   <div class="controls" id="controls" aria-hidden="false">
-    <button id="toggle">Ustaw komin</button>
-    <button id="reset">Reset</button>
-    <button id="css">Pokaż CSS</button>
-    <div style="font-size:12px;color:#333;margin-top:6px;">Włącz tryb ustawiania, przeciągnij komin, wyłącz.</div>
+    <div class="row">
+      <button id="toggle">Ustaw komin</button>
+      <button id="reset">Reset</button>
+      <button id="css">Pokaż CSS</button>
+    </div>
+    <div style="font-size:12px;color:#333;">Dla markera Polski zmień <code>--poland-left</code> i <code>--poland-top</code> w :root jeśli chcesz precyzji.</div>
   </div>
 
   <script>
@@ -162,7 +245,7 @@
       const toggle = document.getElementById('toggle');
       const reset = document.getElementById('reset');
       const cssBtn = document.getElementById('css');
-      const storageKey = 'wokolkomina-globe-komin';
+      const storageKey = 'wokolkomina-globe-komin-v3';
 
       // Load saved pos
       function load(){
@@ -173,9 +256,8 @@
             scene.style.setProperty('--komin-left', p.left);
             scene.style.setProperty('--komin-top', p.top);
           } else {
-            // default: centered horizontally, sit slightly above midline (on horizon)
             scene.style.setProperty('--komin-left', '50%');
-            scene.style.setProperty('--komin-top', '54%');
+            scene.style.setProperty('--komin-top', '68%');
           }
         }catch(e){}
       }
@@ -184,7 +266,7 @@
       }
       function resetPos(){
         scene.style.setProperty('--komin-left','50%');
-        scene.style.setProperty('--komin-top','54%');
+        scene.style.setProperty('--komin-top','68%');
         localStorage.removeItem(storageKey);
       }
 
