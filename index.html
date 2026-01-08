@@ -1,211 +1,248 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Złotów - Panorama Ogłoszeń (satelita)</title>
-    <style>
-        :root{
-            --komin-left: 50%;
-            --komin-bottom: 0%;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Złotów - Glob z kominem</title>
+  <style>
+    :root{
+      --komin-left: 50%;
+      --komin-top: 54%;
+      --bg-top: #8fd1ff;    /* jasne niebo */
+      --bg-bottom: #1f6fb6; /* głęboki niebieski */
+      --globe-size: min(92vmin, 900px);
+    }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            background: #a0d8ef;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-        }
+    *{box-sizing:border-box}
+    body,html{
+      margin:0;padding:0;height:100%;
+      display:flex;align-items:center;justify-content:center;
+      background: radial-gradient(circle at 30% 20%, #c9eeff 0%, transparent 35%),
+                  linear-gradient(180deg,var(--bg-top) 0%, #76b6e6 45%, var(--bg-bottom) 100%);
+      font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      -webkit-font-smoothing:antialiased;
+    }
 
-        /* kontener mapy */
-        .panorama {
-            position: relative;
-            width: min(100vw, 1600px);
-            aspect-ratio: 16 / 9;
-            max-height: 100vh;
-            background: #000;
-            overflow: hidden;
-        }
+    /* Scena: okrągły glob z horyzontem */
+    .scene {
+      position:relative;
+      width:var(--globe-size);
+      height:var(--globe-size);
+      border-radius:50%;
+      overflow:hidden;
+      box-shadow:
+        0 18px 40px rgba(0,0,0,0.28),
+        inset 0 8px 40px rgba(255,255,255,0.06);
+      background:
+        radial-gradient(circle at 35% 20%, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.00) 40%),
+        linear-gradient(180deg, #6fc0ff 0%, #4ea0e0 45%, #2b6fb3 60%, #173e6e 100%);
+      display:block;
+    }
 
-        /* iframe z Google Maps (satelita) - wypełnia kontener */
-        .map-frame {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+    /* Horyzont: jasna poświata i „odbicie" */
+    .scene::before {
+      content:"";
+      position:absolute;
+      left:0;right:0;
+      top:42%;
+      height:20%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
+      filter: blur(8px);
+      transform: translateY(-30%);
+      pointer-events:none;
+    }
+    .scene::after {
+      /* delikatne pasy przypominające atmosferę (opcja) */
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(circle at 50% 10%, rgba(255,255,255,0.03), transparent 30%);
+      mix-blend-mode: screen;
+      pointer-events:none;
+    }
 
-        /* Komin jako nakładka SVG */
-        .komin {
-            position: absolute;
-            left: var(--komin-left);
-            bottom: var(--komin-bottom);
-            transform: translateX(-50%);
-            width: clamp(60px, 6vw, 120px);
-            z-index: 20;
-            pointer-events: none;
-            touch-action: none;
-            transition: transform 0.08s;
-        }
-        .komin.dragging {
-            transform: translate(-50%,-50%) scale(1.03);
-            pointer-events: auto;
-        }
+    /* Drobna „linie horyzontu" */
+    .horizon-line {
+      position:absolute;
+      left:6%;
+      right:6%;
+      top:52%;
+      height:2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.25), rgba(255,255,255,0));
+      filter: blur(0.6px);
+      pointer-events:none;
+      opacity:0.85;
+    }
 
-        /* strefy linków (niewidoczne) */
-        .strefa-klik { position:absolute; display:block; text-decoration:none; }
-        #rower   { top: 7%;  left: 17%; width: 28%; height: 15%; }
-        #auto    { top: 24%; left: 21%; width: 26%; height: 13%; }
-        #traktor { top: 7%;  right: 18%; width: 26%; height: 15%; }
-        #pomidor { top: 24%; right: 20%; width: 27%; height: 13%; }
+    /* Komin (SVG) - umieszczony względnie względem .scene */
+    .komin {
+      position:absolute;
+      left: var(--komin-left);
+      top: var(--komin-top);
+      transform: translate(-50%,-100%); /* góra komina ma leżeć na „powierzchni” */
+      width: clamp(60px, 8vmin, 140px);
+      z-index: 30;
+      pointer-events: none;
+      transition: transform .08s;
+    }
+    .komin.dragging {
+      transform: translate(-50%,-50%) scale(1.04);
+      pointer-events: auto;
+      z-index: 60;
+    }
 
-        /* Panel kontrolny */
-        .komin-controls {
-            position: fixed;
-            right: 12px;
-            bottom: 12px;
-            background: rgba(255,255,255,0.95);
-            border: 1px solid rgba(0,0,0,0.08);
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 13px;
-            z-index: 9999;
-        }
-        .komin-controls button { margin: 3px; padding: 6px 8px; cursor:pointer; }
-    </style>
+    /* panel sterujący */
+    .controls {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      background: rgba(255,255,255,0.95);
+      padding:8px;
+      border-radius:8px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.12);
+      z-index:9999;
+      font-size:13px;
+    }
+    .controls button{ margin:4px 6px 4px 0; padding:6px 8px; cursor:pointer; }
+
+    /* preferencje ruchu */
+    @media (prefers-reduced-motion: reduce){
+      .komin { transition: none; }
+    }
+
+    /* pomocnicze: centrowanie sceny w małych wysokościach */
+    @media (max-height:520px){
+      .scene{ width:clamp(360px, 80vmin, 600px); height:clamp(360px, 80vmin, 600px); }
+    }
+  </style>
 </head>
 <body>
 
-<div class="panorama" id="panorama" role="img" aria-label="Panorama satelitarna Złotowa z nakładką komina.">
-    <!-- iframe: satelita Złotów (Google Maps embed) -->
-    <!-- Ustawione: q=Złotów, z=16 (zoom), t=k (satellite) -->
-    <iframe class="map-frame" src="https://maps.google.com/maps?q=Złot%C3%B3w&z=16&t=k&output=embed" allowfullscreen aria-hidden="false"></iframe>
+  <div class="scene" id="scene" role="img" aria-label="Stylizowany glob z horyzontem">
+    <div class="horizon-line" aria-hidden="true"></div>
 
-    <!-- Komin SVG - nakładka, możliwy do przeciągnięcia -->
-    <svg class="komin" id="komin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-        <defs>
-            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.25"/>
-            </filter>
-        </defs>
+    <!-- Komin SVG (ten sam co wcześniej) -->
+    <svg class="komin" id="komin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-hidden="false" focusable="true">
+      <defs>
+        <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.25"/>
+        </filter>
+      </defs>
 
-        <g transform="rotate(-12 100 120)" filter="url(#shadow)">
-            <rect x="85" y="70" width="30" height="15" fill="#c62828"/>
-            <rect x="85" y="85" width="30" height="15" fill="#ffffff"/>
-            <rect x="85" y="100" width="30" height="15" fill="#c62828"/>
-            <rect x="85" y="115" width="30" height="15" fill="#ffffff"/>
-            <rect x="85" y="130" width="30" height="15" fill="#c62828"/>
-            <rect x="85" y="70" width="30" height="90" rx="4" ry="4" fill="none" stroke="#8a1f1f" stroke-width="2"/>
-            <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
-        </g>
+      <g transform="rotate(-12 100 120)" filter="url(#shadow)">
+        <rect x="85" y="70" width="30" height="15" fill="#c62828"/>
+        <rect x="85" y="85" width="30" height="15" fill="#ffffff"/>
+        <rect x="85" y="100" width="30" height="15" fill="#c62828"/>
+        <rect x="85" y="115" width="30" height="15" fill="#ffffff"/>
+        <rect x="85" y="130" width="30" height="15" fill="#c62828"/>
+        <rect x="85" y="70" width="30" height="90" rx="4" ry="4"
+              fill="none" stroke="#8a1f1f" stroke-width="2"/>
+        <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
+      </g>
 
-        <g class="smoke" aria-hidden="true">
-            <circle cx="100" cy="55" r="8" fill="#e0e0e0"/>
-            <circle cx="112" cy="45" r="10" fill="#eeeeee"/>
-            <circle cx="95"  cy="40" r="6" fill="#f5f5f5"/>
-        </g>
+      <g class="smoke" aria-hidden="true">
+        <circle cx="100" cy="55" r="8" fill="#e0e0e0"/>
+        <circle cx="112" cy="45" r="10" fill="#eeeeee"/>
+        <circle cx="95"  cy="40" r="6" fill="#f5f5f5"/>
+      </g>
     </svg>
+  </div>
 
-    <!-- Niewidoczne strefy linków -->
-    <a class="strefa-klik" id="rower" href="https://www.olx.pl" target="_blank" rel="noopener noreferrer" aria-label="Ogłoszenia rowery"></a>
-    <a class="strefa-klik" id="auto" href="https://www.otomoto.pl" target="_blank" rel="noopener noreferrer" aria-label="Ogłoszenia samochody"></a>
-    <a class="strefa-klik" id="traktor" href="https://www.olx.pl" target="_blank" rel="noopener noreferrer" aria-label="Ogłoszenia traktor"></a>
-    <a class="strefa-klik" id="pomidor" href="https://www.olx.pl" target="_blank" rel="noopener noreferrer" aria-label="Ogłoszenia warzywa"></a>
-</div>
-
-<!-- Panel sterujący pozycjonowaniem komina -->
-<div class="komin-controls" id="controls" aria-hidden="false">
-    <button id="toggleDrag">Ustaw komin</button>
-    <button id="resetBtn">Reset</button>
-    <button id="showCss">Pokaż CSS</button>
+  <div class="controls" id="controls" aria-hidden="false">
+    <button id="toggle">Ustaw komin</button>
+    <button id="reset">Reset</button>
+    <button id="css">Pokaż CSS</button>
     <div style="font-size:12px;color:#333;margin-top:6px;">Włącz tryb ustawiania, przeciągnij komin, wyłącz.</div>
-</div>
+  </div>
 
-<script>
-(function(){
-    const panorama = document.getElementById('panorama');
-    const komin = document.getElementById('komin');
-    const toggleBtn = document.getElementById('toggleDrag');
-    const resetBtn = document.getElementById('resetBtn');
-    const showCssBtn = document.getElementById('showCss');
-    const storageKey = 'wokolkomina-komin-pos-v2';
+  <script>
+    (function(){
+      const scene = document.getElementById('scene');
+      const komin = document.getElementById('komin');
+      const toggle = document.getElementById('toggle');
+      const reset = document.getElementById('reset');
+      const cssBtn = document.getElementById('css');
+      const storageKey = 'wokolkomina-globe-komin';
 
-    function loadPos(){
-        try {
-            const saved = localStorage.getItem(storageKey);
-            if(saved){
-                const p = JSON.parse(saved);
-                panorama.style.setProperty('--komin-left', p.left);
-                panorama.style.setProperty('--komin-bottom', p.bottom);
-            }
-        } catch(e){}
-    }
-    function savePos(left, bottom){
-        localStorage.setItem(storageKey, JSON.stringify({left, bottom}));
-    }
-    function resetPos(){
-        panorama.style.setProperty('--komin-left', '50%');
-        panorama.style.setProperty('--komin-bottom', '0%');
+      // Load saved pos
+      function load(){
+        try{
+          const s = localStorage.getItem(storageKey);
+          if(s){
+            const p = JSON.parse(s);
+            scene.style.setProperty('--komin-left', p.left);
+            scene.style.setProperty('--komin-top', p.top);
+          } else {
+            // default: centered horizontally, sit slightly above midline (on horizon)
+            scene.style.setProperty('--komin-left', '50%');
+            scene.style.setProperty('--komin-top', '54%');
+          }
+        }catch(e){}
+      }
+      function save(left,top){
+        localStorage.setItem(storageKey, JSON.stringify({left,top}));
+      }
+      function resetPos(){
+        scene.style.setProperty('--komin-left','50%');
+        scene.style.setProperty('--komin-top','54%');
         localStorage.removeItem(storageKey);
-    }
+      }
 
-    loadPos();
+      load();
 
-    let dragMode = false;
-    let dragging = false;
+      let edit = false;
+      let dragging = false;
 
-    toggleBtn.addEventListener('click', () => {
-        dragMode = !dragMode;
-        toggleBtn.textContent = dragMode ? 'Wyłącz ustawianie' : 'Ustaw komin';
-        komin.classList.toggle('dragging', dragMode);
-        komin.style.pointerEvents = dragMode ? 'auto' : 'none';
-    });
+      toggle.addEventListener('click', () => {
+        edit = !edit;
+        toggle.textContent = edit ? 'Wyłącz ustawianie' : 'Ustaw komin';
+        komin.classList.toggle('dragging', edit);
+        komin.style.pointerEvents = edit ? 'auto' : 'none';
+      });
 
-    resetBtn.addEventListener('click', () => {
+      reset.addEventListener('click', () => {
         resetPos();
-        alert('Pozycja przywrócona.');
-    });
+        alert('Pozycja przywrócona');
+      });
 
-    showCssBtn.addEventListener('click', () => {
-        const left = getComputedStyle(panorama).getPropertyValue('--komin-left').trim();
-        const bottom = getComputedStyle(panorama).getPropertyValue('--komin-bottom').trim();
-        const css = `.komin { left: ${left}; bottom: ${bottom}; transform: translateX(-50%); }`;
-        prompt('Skopiuj CSS:', css);
-    });
+      cssBtn.addEventListener('click', () => {
+        const left = getComputedStyle(scene).getPropertyValue('--komin-left').trim();
+        const top = getComputedStyle(scene).getPropertyValue('--komin-top').trim();
+        const snippet = `.komin { left: ${left}; top: ${top}; transform: translate(-50%,-100%); }`;
+        prompt('Skopiuj CSS:', snippet);
+      });
 
-    function onPointerDown(e){
-        if(!dragMode) return;
+      function onPointerDown(e){
+        if(!edit) return;
         dragging = true;
-        try { komin.setPointerCapture(e.pointerId); } catch(e){}
-    }
-    function onPointerMove(e){
+        try{ komin.setPointerCapture(e.pointerId); }catch(e){}
+      }
+      function onPointerMove(e){
         if(!dragging) return;
-        const rect = panorama.getBoundingClientRect();
+        const rect = scene.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const clampedX = Math.max(0, Math.min(rect.width, x));
-        const clampedY = Math.max(0, Math.min(rect.height, y));
-        const leftPercent = (clampedX / rect.width) * 100;
-        const bottomPercent = ((rect.height - clampedY) / rect.height) * 100;
-        panorama.style.setProperty('--komin-left', leftPercent.toFixed(2) + '%');
-        panorama.style.setProperty('--komin-bottom', bottomPercent.toFixed(2) + '%');
-    }
-    function onPointerUp(e){
+        const cx = Math.max(0, Math.min(rect.width, x));
+        const cy = Math.max(0, Math.min(rect.height, y));
+        const leftPercent = (cx/rect.width)*100;
+        const topPercent = (cy/rect.height)*100;
+        scene.style.setProperty('--komin-left', leftPercent.toFixed(2) + '%');
+        scene.style.setProperty('--komin-top', topPercent.toFixed(2) + '%');
+      }
+      function onPointerUp(e){
         if(!dragging) return;
-        dragging = false;
-        try { komin.releasePointerCapture(e.pointerId); } catch(e){}
-        const left = getComputedStyle(panorama).getPropertyValue('--komin-left').trim();
-        const bottom = getComputedStyle(panorama).getPropertyValue('--komin-bottom').trim();
-        savePos(left, bottom);
-    }
+        dragging=false;
+        try{ komin.releasePointerCapture(e.pointerId); }catch(e){}
+        const left = getComputedStyle(scene).getPropertyValue('--komin-left').trim();
+        const top = getComputedStyle(scene).getPropertyValue('--komin-top').trim();
+        save(left, top);
+      }
 
-    komin.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-    komin.addEventListener('touchstart', (e)=> e.preventDefault(), { passive: false });
-})();
-</script>
-
+      komin.addEventListener('pointerdown', onPointerDown);
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      komin.addEventListener('touchstart', (e)=> e.preventDefault(), {passive:false});
+    })();
+  </script>
 </body>
 </html>
