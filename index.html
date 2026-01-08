@@ -1,191 +1,86 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wokół Komina — Northern Hemisphere Globe</title>
-  <style>
-    :root{--bg:#0b1220;--glow:#7fd3ff;--accent:#e63946}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#021025 0%, #071426 60%, #0b1220 100%);color:#fff;font-family:system-ui,Segoe UI,Roboto,Arial}
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-    .globe-container{width:520px;max-width:92vw;position:relative}
-
-    /* Globe styles */
-    svg.globe{display:block;width:100%;height:auto}
-    .globe-circle{fill:url(#ocean);stroke:#0e3b53;stroke-width:2;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.6))}
-    .latlon{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:1}
-    .poland-outline{fill:none;stroke:var(--accent);stroke-width:3;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 6px 14px rgba(230,57,70,0.25));opacity:0.95}
-
-    /* Chimney (draggable) */
-    .chimney{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);cursor:grab;width:36px;height:48px;display:flex;align-items:center;justify-content:center}
-    .chimney .brick{width:28px;height:36px;background:linear-gradient(180deg,#8b2b2b,#b03a3a);border-radius:4px;box-shadow:inset 0 -6px 12px rgba(0,0,0,0.35)}
-    .chimney:active{cursor:grabbing}
-
-    /* subtle caption */
-    .caption{position:absolute;left:8px;bottom:8px;font-size:13px;color:rgba(255,255,255,0.7)}
-
-    /* Responsive */
-    @media (max-width:420px){.chimney{width:28px;height:40px}.chimney .brick{width:22px;height:30px}}
-  </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Wokół Komina — Komin na niebieskim tle</title>
+    <style>
+        :root{ --bg-color: #a0d8ef; --komin-left:50%; --komin-bottom:2%; }
+        html,body{height:100%;margin:0;font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial;background:var(--bg-color); display:flex;align-items:center;justify-content:center}
+        .stage{position:relative;width:min(100vw,1200px);height:min(70vh,720px);max-width:95vw;background:linear-gradient(180deg,#bfefff,#8fcff0);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.15);overflow:hidden}
+        .komin{position:absolute;left:var(--komin-left);bottom:var(--komin-bottom);transform:translateX(-50%);width:clamp(60px,6vw,120px);z-index:20;pointer-events:none;transition:transform .08s}
+        .komin.dragging{transform:translate(-50%,-50%) scale(1.03);pointer-events:auto}
+        .controls{position:fixed;right:14px;bottom:14px;background:rgba(255,255,255,0.95);padding:8px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);font-size:13px;z-index:9999}
+        .controls button{margin:4px;padding:6px 8px;cursor:pointer}
+        @media (prefers-reduced-motion:reduce){.komin{transition:none}}
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="globe-container" id="globeWrap">
-      <!-- SVG globe: only top (northern hemisphere) visible via clipPath -->
-      <svg class="globe" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+<div class="stage" id="stage" role="img" aria-label="Niebieskie tło z kominem">
+    <!-- Komin SVG -->
+    <svg class="komin" id="komin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-hidden="false" focusable="true">
         <defs>
-          <radialGradient id="ocean" cx="45%" cy="35%" r="70%">
-            <stop offset="0%" stop-color="#4fb1d9" />
-            <stop offset="60%" stop-color="#167ba3" />
-            <stop offset="100%" stop-color="#073d55" />
-          </radialGradient>
-          <clipPath id="northClip">
-            <!-- clip to top half of the circle (northern hemisphere) -->
-            <rect x="0" y="0" width="500" height="250" />
-          </clipPath>
+            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.25"/>
+            </filter>
         </defs>
 
-        <!-- full globe circle (we'll show only top via clip) -->
-        <g clip-path="url(#northClip)">
-          <circle cx="250" cy="250" r="200" class="globe-circle" />
-
-          <!-- lat/lon subtle lines -->
-          <g class="latlon">
-            <!-- meridians -->
-            <path d="M250 50 C270 90 270 410 250 450" opacity="0.08" />
-            <path d="M250 50 C230 90 230 410 250 450" opacity="0.05" />
-            <!-- parallels (northern) -->
-            <ellipse cx="250" cy="130" rx="120" ry="42" opacity="0.06" />
-            <ellipse cx="250" cy="180" rx="150" ry="52" opacity="0.05" />
-            <ellipse cx="250" cy="220" rx="180" ry="62" opacity="0.04" />
-          </g>
-
-          <!-- Stylized Poland outline overlay (no text or pin). The path is simplified and placed roughly on the globe's northern hemisphere. -->
-          <g id="poland" transform="translate(235,135) scale(0.9)">
-            <!-- approximate stylized outline path - intentionally artistic rather than perfectly geospatial -->
-            <path class="poland-outline" d="M-30,35 L-20,10 L-5,6 L10,0 L26,6 L34,20 L28,40 L18,50 L6,48 L-6,52 L-18,46 L-28,40 Z" />
-          </g>
+        <g transform="rotate(-12 100 120)" filter="url(#shadow)">
+            <rect x="85" y="70" width="30" height="15" fill="#c62828"/>
+            <rect x="85" y="85" width="30" height="15" fill="#ffffff"/>
+            <rect x="85" y="100" width="30" height="15" fill="#c62828"/>
+            <rect x="85" y="115" width="30" height="15" fill="#ffffff"/>
+            <rect x="85" y="130" width="30" height="15" fill="#c62828"/>
+            <rect x="85" y="70" width="30" height="90" rx="4" ry="4" fill="none" stroke="#8a1f1f" stroke-width="2"/>
+            <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
         </g>
 
-        <!-- subtle rim (visible edge) -->
-        <circle cx="250" cy="250" r="200" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="6" opacity="0.35" />
-      </svg>
+        <g class="smoke" aria-hidden="true">
+            <circle cx="100" cy="55" r="8" fill="#e0e0e0"/>
+            <circle cx="112" cy="45" r="10" fill="#eeeeee"/>
+            <circle cx="95"  cy="40" r="6" fill="#f5f5f5"/>
+        </g>
+    </svg>
+</div>
 
-      <!-- Draggable chimney element: remains interactive and can be dragged over the globe -->
-      <div class="chimney" id="chimney" role="img" aria-label="Draggable chimney" draggable="false">
-        <div class="brick"></div>
-      </div>
+<div class="controls">
+    <button id="toggle">Ustaw komin</button>
+    <button id="reset">Reset</button>
+    <button id="showCss">Pokaż CSS</button>
+</div>
 
-      <div class="caption">Northern hemisphere view — Poland shown as an outline</div>
-    </div>
-  </div>
+<script>
+(function(){
+    const stage = document.getElementById('stage');
+    const komin = document.getElementById('komin');
+    const toggle = document.getElementById('toggle');
+    const reset = document.getElementById('reset');
+    const showCss = document.getElementById('showCss');
+    const storageKey = 'wokolkomina-komin-simple-pos';
 
-  <script>
-    // Draggable chimney logic: pointer/touch friendly. Keeps dragging inside globe bounds.
-    (function(){
-      const chimney = document.getElementById('chimney');
-      const globeWrap = document.getElementById('globeWrap');
-      const svg = globeWrap.querySelector('svg');
-      const globeRect = svg.getBoundingClientRect();
-      const globeCenter = {x: globeRect.left + globeRect.width/2, y: globeRect.top + globeRect.height/2};
-      const globeRadius = (globeRect.width/2) * 0.8; // somewhat smaller to stay inside visible circle
+    function load(){
+        try{const s=localStorage.getItem(storageKey);if(s){const p=JSON.parse(s);stage.style.setProperty('--komin-left',p.left);stage.style.setProperty('--komin-bottom',p.bottom);}}catch(e){}
+    }
+    function save(l,b){localStorage.setItem(storageKey,JSON.stringify({left:l,bottom:b}));}
+    function resetPos(){stage.style.setProperty('--komin-left','50%');stage.style.setProperty('--komin-bottom','2%');localStorage.removeItem(storageKey);}    
+    load();
 
-      let isDragging = false;
-      let offset = {x:0,y:0};
+    let dragMode=false,dragging=false;
+    toggle.addEventListener('click',()=>{dragMode=!dragMode;toggle.textContent=dragMode? 'Wyłącz ustawianie':'Ustaw komin';komin.classList.toggle('dragging',dragMode);komin.style.pointerEvents=dragMode?'auto':'none';});
+    reset.addEventListener('click',()=>{resetPos();alert('Pozycja przywrócona');});
+    showCss.addEventListener('click',()=>{const l=getComputedStyle(stage).getPropertyValue('--komin-left').trim();const b=getComputedStyle(stage).getPropertyValue('--komin-bottom').trim();prompt('Skopiuj CSS:',`.komin{left:${l};bottom:${b};transform:translateX(-50%);}`);});
 
-      // Utility to update constraints on resize
-      function updateGeometry(){
-        const r = svg.getBoundingClientRect();
-        globeCenter.x = r.left + r.width/2;
-        globeCenter.y = r.top + r.height/2;
-        globeRadius = (r.width/2) * 0.8;
-      }
+    function onPointerDown(e){if(!dragMode) return;dragging=true;try{komin.setPointerCapture(e.pointerId);}catch{} }
+    function onPointerMove(e){if(!dragging) return;const rect=stage.getBoundingClientRect();const x=e.clientX-rect.left;const y=e.clientY-rect.top;const clampedX=Math.max(0,Math.min(rect.width,x));const clampedY=Math.max(0,Math.min(rect.height,y));const leftPct=(clampedX/rect.width)*100;const bottomPct=((rect.height-clampedY)/rect.height)*100;stage.style.setProperty('--komin-left',leftPct.toFixed(2)+'%');stage.style.setProperty('--komin-bottom',bottomPct.toFixed(2)+'%');}
+    function onPointerUp(e){if(!dragging) return;dragging=false;try{komin.releasePointerCapture(e.pointerId);}catch{}const l=getComputedStyle(stage).getPropertyValue('--komin-left').trim();const b=getComputedStyle(stage).getPropertyValue('--komin-bottom').trim();save(l,b);}    
 
-      // We'll compute a position constrained within the northern hemisphere (top half of the globe area)
-      function constrainToNorthernGlobe(clientX, clientY){
-        // Vector from center
-        const vx = clientX - globeCenter.x;
-        const vy = clientY - globeCenter.y;
-        const dist = Math.sqrt(vx*vx + vy*vy) || 1;
-        const max = globeRadius;
-        let nx = clientX, ny = clientY;
-        if(dist > max){
-          // snap to circle edge
-          const scale = max / dist;
-          nx = globeCenter.x + vx * scale;
-          ny = globeCenter.y + vy * scale;
-        }
-        // ensure we stay in northern hemisphere (ny <= centerY)
-        if(ny > globeCenter.y){ ny = globeCenter.y; }
-        return {x:nx, y:ny};
-      }
+    komin.addEventListener('pointerdown',onPointerDown);
+    window.addEventListener('pointermove',onPointerMove);
+    window.addEventListener('pointerup',onPointerUp);
+    komin.addEventListener('touchstart',(e)=>e.preventDefault(),{passive:false});
+})();
+</script>
 
-      function toLocalPosition(p){
-        const wrapRect = globeWrap.getBoundingClientRect();
-        // position chimney so its center is at p
-        const left = p.x - wrapRect.left - chimney.offsetWidth/2;
-        const top = p.y - wrapRect.top - chimney.offsetHeight/2;
-        return {left, top};
-      }
-
-      function onPointerDown(e){
-        e.preventDefault();
-        isDragging = true;
-        chimney.setPointerCapture && chimney.setPointerCapture(e.pointerId);
-        offset.x = e.clientX - chimney.getBoundingClientRect().left;
-        offset.y = e.clientY - chimney.getBoundingClientRect().top;
-        chimney.style.cursor = 'grabbing';
-      }
-
-      function onPointerMove(e){
-        if(!isDragging) return;
-        // compute constrained pos using cursor (centered)
-        const target = {x: e.clientX, y: e.clientY};
-        const constrained = constrainToNorthernGlobe(target.x, target.y);
-        const local = toLocalPosition(constrained);
-        chimney.style.left = local.left + 'px';
-        chimney.style.top = local.top + 'px';
-      }
-
-      function onPointerUp(e){
-        if(!isDragging) return;
-        isDragging = false;
-        chimney.releasePointerCapture && chimney.releasePointerCapture(e.pointerId);
-        chimney.style.cursor = 'grab';
-      }
-
-      // pointer events
-      chimney.addEventListener('pointerdown', onPointerDown);
-      window.addEventListener('pointermove', onPointerMove);
-      window.addEventListener('pointerup', onPointerUp);
-
-      // touch fallback for old browsers
-      chimney.addEventListener('touchstart', function(e){ onPointerDown(e.touches[0]); }, {passive:false});
-      window.addEventListener('touchmove', function(e){ onPointerMove(e.touches[0]); }, {passive:false});
-      window.addEventListener('touchend', function(e){ onPointerUp(e.changedTouches[0]); });
-
-      // recompute geometry on resize
-      window.addEventListener('resize', function(){
-        // slight timeout to allow layout
-        setTimeout(function(){
-          const r = svg.getBoundingClientRect();
-          globeCenter.x = r.left + r.width/2;
-          globeCenter.y = r.top + r.height/2;
-          globeRadius = (r.width/2) * 0.8;
-        },100);
-      });
-
-      // Initialize position: place chimney near Poland outline area
-      window.addEventListener('load', function(){
-        const initialClient = {
-          x: globeWrap.getBoundingClientRect().left + globeWrap.getBoundingClientRect().width * 0.52,
-          y: globeWrap.getBoundingClientRect().top + globeWrap.getBoundingClientRect().height * 0.32
-        };
-        const local = toLocalPosition(constrainToNorthernGlobe(initialClient.x, initialClient.y));
-        chimney.style.left = local.left + 'px';
-        chimney.style.top = local.top + 'px';
-      });
-    })();
-  </script>
 </body>
 </html>
