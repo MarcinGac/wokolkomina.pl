@@ -1,329 +1,190 @@
-<!DOCTYPE html>
-<html lang="pl">
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Złotów - Glob (dolna półkula) z kominem i Polską</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wokół Komina — Northern Hemisphere Globe</title>
   <style>
-    :root{
-      --komin-left: 50%;
-      --komin-top: 68%; /* domyślnie na dolnej półkuli */
-      --globe-size: min(92vmin, 900px);
-      --sky-top: #aee7ff;
-      --sky-mid: #6fbff6;
-      --sea-deep: #0f4b7c;
-      --continent: #f6e9b5;
-      --continent-shadow: rgba(0,0,0,0.06);
+    :root{--bg:#0b1220;--glow:#7fd3ff;--accent:#e63946}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#021025 0%, #071426 60%, #0b1220 100%);color:#fff;font-family:system-ui,Segoe UI,Roboto,Arial}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+    .globe-container{width:520px;max-width:92vw;position:relative}
 
-      /* pozycja markera Polski — dostosuj jeśli trzeba */
-      --poland-left: 46%;
-      --poland-top: 36%;
-    }
+    /* Globe styles */
+    svg.globe{display:block;width:100%;height:auto}
+    .globe-circle{fill:url(#ocean);stroke:#0e3b53;stroke-width:2;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.6))}
+    .latlon{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:1}
+    .poland-outline{fill:none;stroke:var(--accent);stroke-width:3;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 6px 14px rgba(230,57,70,0.25));opacity:0.95}
 
-    *{box-sizing:border-box}
-    body,html{
-      margin:0;padding:0;height:100%;
-      display:flex;align-items:center;justify-content:center;
-      background:
-        radial-gradient(circle at 30% 18%, rgba(255,255,255,0.14) 0%, transparent 30%),
-        linear-gradient(180deg, #cfefff 0%, #9dc7f0 40%, #4f8fc2 100%);
-      font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      -webkit-font-smoothing:antialiased;
-    }
+    /* Chimney (draggable) */
+    .chimney{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);cursor:grab;width:36px;height:48px;display:flex;align-items:center;justify-content:center}
+    .chimney .brick{width:28px;height:36px;background:linear-gradient(180deg,#8b2b2b,#b03a3a);border-radius:4px;box-shadow:inset 0 -6px 12px rgba(0,0,0,0.35)}
+    .chimney:active{cursor:grabbing}
 
-    /* Kula / scena */
-    .scene {
-      position:relative;
-      width:var(--globe-size);
-      height:var(--globe-size);
-      border-radius:50%;
-      overflow:hidden;
-      background:
-        radial-gradient(circle at 35% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.00) 40%),
-        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sea-deep) 100%);
-      box-shadow: 0 28px 60px rgba(0,0,0,0.32), inset 0 6px 24px rgba(255,255,255,0.03);
-      transform: translateY(6%); /* lekko przesuń w dół, by pokazać dolną półkulę */
-    }
+    /* subtle caption */
+    .caption{position:absolute;left:8px;bottom:8px;font-size:13px;color:rgba(255,255,255,0.7)}
 
-    .horizon-glow {
-      position:absolute;
-      left:0;right:0;
-      top:48%;
-      height:36%;
-      background: radial-gradient(ellipse at 50% 45%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.00) 40%);
-      filter: blur(10px);
-      transform: translateY(-18%);
-      pointer-events:none;
-      mix-blend-mode: screen;
-      opacity:0.95;
-    }
-
-    .earth-svg {
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      pointer-events:none;
-      transform: translateY(6%);
-    }
-
-    /* Komin (SVG) */
-    .komin {
-      position:absolute;
-      left: var(--komin-left);
-      top: var(--komin-top);
-      transform: translate(-50%,-100%); /* góra komina na powierzchni */
-      width: clamp(60px, 8vmin, 140px);
-      z-index: 40;
-      pointer-events: none;
-      transition: transform .08s;
-    }
-    .komin.dragging {
-      transform: translate(-50%,-50%) scale(1.04);
-      pointer-events: auto;
-      z-index: 80;
-    }
-
-    /* Marker Polski */
-    .poland-marker {
-      position: absolute;
-      left: var(--poland-left);
-      top: var(--poland-top);
-      transform: translate(-50%,-50%);
-      z-index: 50;
-      pointer-events: auto;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:6px;
-      user-select:none;
-    }
-    .poland-pin {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #ffcc00;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-      border: 2px solid #fff;
-      position:relative;
-    }
-    .poland-pin::after{
-      content:"";
-      position:absolute;
-      left:50%; top:100%;
-      transform:translate(-50%, -10%);
-      width:6px; height:10px;
-      background:#ffcc00;
-      border-radius:2px;
-    }
-    .poland-label {
-      background: rgba(255,255,255,0.95);
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size:12px;
-      color:#0b3b66;
-      box-shadow: 0 4px 14px rgba(11,59,102,0.12);
-      white-space:nowrap;
-    }
-    /* pulsujący krąg */
-    .poland-ring {
-      position:absolute;
-      width:36px; height:36px;
-      border-radius:50%;
-      left:50%; top:50%;
-      transform:translate(-50%,-50%);
-      background: rgba(255,204,0,0.12);
-      filter: blur(1px);
-      animation: pulse 2.4s infinite;
-      z-index:-1;
-    }
-    @keyframes pulse {
-      0% { transform: translate(-50%,-50%) scale(0.9); opacity:0.9; }
-      70% { transform: translate(-50%,-50%) scale(1.7); opacity:0; }
-      100% { transform: translate(-50%,-50%) scale(1.8); opacity:0; }
-    }
-
-    /* panel sterujący */
-    .controls {
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      background: rgba(255,255,255,0.95);
-      padding:8px;
-      border-radius:8px;
-      box-shadow:0 8px 20px rgba(0,0,0,0.12);
-      z-index:9999;
-      font-size:13px;
-      display:flex; flex-direction:column; gap:6px;
-    }
-    .controls .row { display:flex; gap:6px; align-items:center; }
-    .controls button{ padding:6px 8px; cursor:pointer; }
-
-    .controls input[type="range"]{ width:120px; }
-
-    @media (prefers-reduced-motion: reduce){
-      .komin { transition: none; }
-      .poland-ring { animation: none; opacity:0.6; transform:translate(-50%,-50%) scale(1.15); }
-    }
+    /* Responsive */
+    @media (max-width:420px){.chimney{width:28px;height:40px}.chimney .brick{width:22px;height:30px}}
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="globe-container" id="globeWrap">
+      <!-- SVG globe: only top (northern hemisphere) visible via clipPath -->
+      <svg class="globe" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="ocean" cx="45%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#4fb1d9" />
+            <stop offset="60%" stop-color="#167ba3" />
+            <stop offset="100%" stop-color="#073d55" />
+          </radialGradient>
+          <clipPath id="northClip">
+            <!-- clip to top half of the circle (northern hemisphere) -->
+            <rect x="0" y="0" width="500" height="250" />
+          </clipPath>
+        </defs>
 
-  <div class="scene" id="scene" role="img" aria-label="Stylizowana kula - dolna półkula z kontynentami i markerem Polski">
-    <div class="horizon-glow" aria-hidden="true"></div>
+        <!-- full globe circle (we'll show only top via clip) -->
+        <g clip-path="url(#northClip)">
+          <circle cx="250" cy="250" r="200" class="globe-circle" />
 
-    <!-- SVG z bajkowymi kontynentami -->
-    <svg class="earth-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id="seaShade" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="#4aa0dd" stop-opacity="0.45"/>
-          <stop offset="100%" stop-color="#0f4b7c" stop-opacity="0.8"/>
-        </linearGradient>
-      </defs>
+          <!-- lat/lon subtle lines -->
+          <g class="latlon">
+            <!-- meridians -->
+            <path d="M250 50 C270 90 270 410 250 450" opacity="0.08" />
+            <path d="M250 50 C230 90 230 410 250 450" opacity="0.05" />
+            <!-- parallels (northern) -->
+            <ellipse cx="250" cy="130" rx="120" ry="42" opacity="0.06" />
+            <ellipse cx="250" cy="180" rx="150" ry="52" opacity="0.05" />
+            <ellipse cx="250" cy="220" rx="180" ry="62" opacity="0.04" />
+          </g>
 
-      <circle cx="50" cy="50" r="48" fill="url(#seaShade)" opacity="0.95" />
+          <!-- Stylized Poland outline overlay (no text or pin). The path is simplified and placed roughly on the globe's northern hemisphere. -->
+          <g id="poland" transform="translate(235,135) scale(0.9)">
+            <!-- approximate stylized outline path - intentionally artistic rather than perfectly geospatial -->
+            <path class="poland-outline" d="M-30,35 L-20,10 L-5,6 L10,0 L26,6 L34,20 L28,40 L18,50 L6,48 L-6,52 L-18,46 L-28,40 Z" />
+          </g>
+        </g>
 
-      <g transform="translate(0,6)">
-        <path class="continent" d="M22 58 C18 52, 26 44, 34 46 C42 48, 46 54, 54 52 C62 50, 70 56, 66 62 C62 68, 54 70, 46 72 C38 74, 28 72, 24 66 C22 62, 22 58, 22 58 Z"/>
-        <path class="continent" d="M66 68 C68 66, 72 66, 74 68 C76 70, 74 72, 72 72 C70 72, 68 70, 66 68 Z" />
-        <path class="continent" d="M14 68 C16 66, 18 64, 20 65 C22 66, 20 69, 18 70 C16 71, 14 70, 14 68 Z" />
-        <path class="continent" d="M4 44 C8 38, 16 34, 24 36 C30 38, 28 44, 26 50 C24 56, 18 58, 12 58 C8 58, 6 52, 4 44 Z"/>
-        <path class="continent" d="M56 46 C62 42, 70 40, 76 44 C80 48, 78 54, 74 58 C70 62, 64 62, 58 60 C54 58, 52 52, 56 46 Z"/>
-        <path class="continent-outline" d="M22 58 C18 52, 26 44, 34 46 C42 48, 46 54, 54 52 C62 50, 70 56, 66 62 C62 68, 54 70, 46 72 C38 74, 28 72, 24 66 C22 62, 22 58, 22 58 Z"/>
-      </g>
+        <!-- subtle rim (visible edge) -->
+        <circle cx="250" cy="250" r="200" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="6" opacity="0.35" />
+      </svg>
 
-      <ellipse cx="46" cy="32" rx="28" ry="12" fill="rgba(255,255,255,0.06)" />
-    </svg>
+      <!-- Draggable chimney element: remains interactive and can be dragged over the globe -->
+      <div class="chimney" id="chimney" role="img" aria-label="Draggable chimney" draggable="false">
+        <div class="brick"></div>
+      </div>
 
-    <!-- Komin SVG -->
-    <svg class="komin" id="komin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-hidden="false" focusable="true">
-      <defs>
-        <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.25"/>
-        </filter>
-      </defs>
-
-      <g transform="rotate(-12 100 120)" filter="url(#shadow)">
-        <rect x="85" y="70" width="30" height="15" fill="#c62828"/>
-        <rect x="85" y="85" width="30" height="15" fill="#ffffff"/>
-        <rect x="85" y="100" width="30" height="15" fill="#c62828"/>
-        <rect x="85" y="115" width="30" height="15" fill="#ffffff"/>
-        <rect x="85" y="130" width="30" height="15" fill="#c62828"/>
-        <rect x="85" y="70" width="30" height="90" rx="4" ry="4" fill="none" stroke="#8a1f1f" stroke-width="2"/>
-        <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
-      </g>
-
-      <g class="smoke" aria-hidden="true">
-        <circle cx="100" cy="55" r="8" fill="#e0e0e0"/>
-        <circle cx="112" cy="45" r="10" fill="#eeeeee"/>
-        <circle cx="95"  cy="40" r="6" fill="#f5f5f5"/>
-      </g>
-    </svg>
-
-    <!-- Marker Polski -->
-    <div class="poland-marker" id="poland" title="Polska" aria-label="Polska">
-      <div class="poland-ring" aria-hidden="true"></div>
-      <div class="poland-pin" aria-hidden="true"></div>
-      <div class="poland-label">Polska</div>
+      <div class="caption">Northern hemisphere view — Poland shown as an outline</div>
     </div>
-
-  </div>
-
-  <div class="controls" id="controls" aria-hidden="false">
-    <div class="row">
-      <button id="toggle">Ustaw komin</button>
-      <button id="reset">Reset</button>
-      <button id="css">Pokaż CSS</button>
-    </div>
-    <div style="font-size:12px;color:#333;">Dla markera Polski zmień <code>--poland-left</code> i <code>--poland-top</code> w :root jeśli chcesz precyzji.</div>
   </div>
 
   <script>
+    // Draggable chimney logic: pointer/touch friendly. Keeps dragging inside globe bounds.
     (function(){
-      const scene = document.getElementById('scene');
-      const komin = document.getElementById('komin');
-      const toggle = document.getElementById('toggle');
-      const reset = document.getElementById('reset');
-      const cssBtn = document.getElementById('css');
-      const storageKey = 'wokolkomina-globe-komin-v3';
+      const chimney = document.getElementById('chimney');
+      const globeWrap = document.getElementById('globeWrap');
+      const svg = globeWrap.querySelector('svg');
+      const globeRect = svg.getBoundingClientRect();
+      const globeCenter = {x: globeRect.left + globeRect.width/2, y: globeRect.top + globeRect.height/2};
+      const globeRadius = (globeRect.width/2) * 0.8; // somewhat smaller to stay inside visible circle
 
-      // Load saved pos
-      function load(){
-        try{
-          const s = localStorage.getItem(storageKey);
-          if(s){
-            const p = JSON.parse(s);
-            scene.style.setProperty('--komin-left', p.left);
-            scene.style.setProperty('--komin-top', p.top);
-          } else {
-            scene.style.setProperty('--komin-left', '50%');
-            scene.style.setProperty('--komin-top', '68%');
-          }
-        }catch(e){}
-      }
-      function save(left,top){
-        localStorage.setItem(storageKey, JSON.stringify({left,top}));
-      }
-      function resetPos(){
-        scene.style.setProperty('--komin-left','50%');
-        scene.style.setProperty('--komin-top','68%');
-        localStorage.removeItem(storageKey);
+      let isDragging = false;
+      let offset = {x:0,y:0};
+
+      // Utility to update constraints on resize
+      function updateGeometry(){
+        const r = svg.getBoundingClientRect();
+        globeCenter.x = r.left + r.width/2;
+        globeCenter.y = r.top + r.height/2;
+        globeRadius = (r.width/2) * 0.8;
       }
 
-      load();
+      // We'll compute a position constrained within the northern hemisphere (top half of the globe area)
+      function constrainToNorthernGlobe(clientX, clientY){
+        // Vector from center
+        const vx = clientX - globeCenter.x;
+        const vy = clientY - globeCenter.y;
+        const dist = Math.sqrt(vx*vx + vy*vy) || 1;
+        const max = globeRadius;
+        let nx = clientX, ny = clientY;
+        if(dist > max){
+          // snap to circle edge
+          const scale = max / dist;
+          nx = globeCenter.x + vx * scale;
+          ny = globeCenter.y + vy * scale;
+        }
+        // ensure we stay in northern hemisphere (ny <= centerY)
+        if(ny > globeCenter.y){ ny = globeCenter.y; }
+        return {x:nx, y:ny};
+      }
 
-      let edit = false;
-      let dragging = false;
-
-      toggle.addEventListener('click', () => {
-        edit = !edit;
-        toggle.textContent = edit ? 'Wyłącz ustawianie' : 'Ustaw komin';
-        komin.classList.toggle('dragging', edit);
-        komin.style.pointerEvents = edit ? 'auto' : 'none';
-      });
-
-      reset.addEventListener('click', () => {
-        resetPos();
-        alert('Pozycja przywrócona');
-      });
-
-      cssBtn.addEventListener('click', () => {
-        const left = getComputedStyle(scene).getPropertyValue('--komin-left').trim();
-        const top = getComputedStyle(scene).getPropertyValue('--komin-top').trim();
-        const snippet = `.komin { left: ${left}; top: ${top}; transform: translate(-50%,-100%); }`;
-        prompt('Skopiuj CSS:', snippet);
-      });
+      function toLocalPosition(p){
+        const wrapRect = globeWrap.getBoundingClientRect();
+        // position chimney so its center is at p
+        const left = p.x - wrapRect.left - chimney.offsetWidth/2;
+        const top = p.y - wrapRect.top - chimney.offsetHeight/2;
+        return {left, top};
+      }
 
       function onPointerDown(e){
-        if(!edit) return;
-        dragging = true;
-        try{ komin.setPointerCapture(e.pointerId); }catch(e){}
-      }
-      function onPointerMove(e){
-        if(!dragging) return;
-        const rect = scene.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const cx = Math.max(0, Math.min(rect.width, x));
-        const cy = Math.max(0, Math.min(rect.height, y));
-        const leftPercent = (cx/rect.width)*100;
-        const topPercent = (cy/rect.height)*100;
-        scene.style.setProperty('--komin-left', leftPercent.toFixed(2) + '%');
-        scene.style.setProperty('--komin-top', topPercent.toFixed(2) + '%');
-      }
-      function onPointerUp(e){
-        if(!dragging) return;
-        dragging=false;
-        try{ komin.releasePointerCapture(e.pointerId); }catch(e){}
-        const left = getComputedStyle(scene).getPropertyValue('--komin-left').trim();
-        const top = getComputedStyle(scene).getPropertyValue('--komin-top').trim();
-        save(left, top);
+        e.preventDefault();
+        isDragging = true;
+        chimney.setPointerCapture && chimney.setPointerCapture(e.pointerId);
+        offset.x = e.clientX - chimney.getBoundingClientRect().left;
+        offset.y = e.clientY - chimney.getBoundingClientRect().top;
+        chimney.style.cursor = 'grabbing';
       }
 
-      komin.addEventListener('pointerdown', onPointerDown);
+      function onPointerMove(e){
+        if(!isDragging) return;
+        // compute constrained pos using cursor (centered)
+        const target = {x: e.clientX, y: e.clientY};
+        const constrained = constrainToNorthernGlobe(target.x, target.y);
+        const local = toLocalPosition(constrained);
+        chimney.style.left = local.left + 'px';
+        chimney.style.top = local.top + 'px';
+      }
+
+      function onPointerUp(e){
+        if(!isDragging) return;
+        isDragging = false;
+        chimney.releasePointerCapture && chimney.releasePointerCapture(e.pointerId);
+        chimney.style.cursor = 'grab';
+      }
+
+      // pointer events
+      chimney.addEventListener('pointerdown', onPointerDown);
       window.addEventListener('pointermove', onPointerMove);
       window.addEventListener('pointerup', onPointerUp);
-      komin.addEventListener('touchstart', (e)=> e.preventDefault(), {passive:false});
+
+      // touch fallback for old browsers
+      chimney.addEventListener('touchstart', function(e){ onPointerDown(e.touches[0]); }, {passive:false});
+      window.addEventListener('touchmove', function(e){ onPointerMove(e.touches[0]); }, {passive:false});
+      window.addEventListener('touchend', function(e){ onPointerUp(e.changedTouches[0]); });
+
+      // recompute geometry on resize
+      window.addEventListener('resize', function(){
+        // slight timeout to allow layout
+        setTimeout(function(){
+          const r = svg.getBoundingClientRect();
+          globeCenter.x = r.left + r.width/2;
+          globeCenter.y = r.top + r.height/2;
+          globeRadius = (r.width/2) * 0.8;
+        },100);
+      });
+
+      // Initialize position: place chimney near Poland outline area
+      window.addEventListener('load', function(){
+        const initialClient = {
+          x: globeWrap.getBoundingClientRect().left + globeWrap.getBoundingClientRect().width * 0.52,
+          y: globeWrap.getBoundingClientRect().top + globeWrap.getBoundingClientRect().height * 0.32
+        };
+        const local = toLocalPosition(constrainToNorthernGlobe(initialClient.x, initialClient.y));
+        chimney.style.left = local.left + 'px';
+        chimney.style.top = local.top + 'px';
+      });
     })();
   </script>
 </body>
