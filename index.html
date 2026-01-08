@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Złotów - Panorama Ogłoszeń</title>
+    <style>
+        /* Ustawienia okna - obrazek zawsze na środku */
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            background: #a0d8ef; /* Jasne niebo na bokach */
+            display: flex; justify-content: center; align-items: center; 
+            overflow: hidden; 
+        }
+
+        /* Główny kontener Twojego zdjęcia */
+        .panorama {
+            position: relative;
+            width: 100vw; height: 56.25vw; 
+            max-height: 100vh; max-width: 177.78vh;
+            background: url('twoj_obrazek.png') no-repeat center center;
+            background-size: contain;
+        }
+
+        /* Niewidzialne dymki do klikania - idealnie nad Twoimi napisami */
+        .strefa-klik {
+            position: absolute;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: transform 0.2s, background 0.2s;
+            /* background: rgba(255, 255, 255, 0.1); */ /* Możesz odkomentować, żeby zobaczyć gdzie są pola */
+        }
+
+        /* Efekt po najechaniu myszką - dymek "pulsuje" */
+        .strefa-klik:hover { 
+            transform: scale(1.05); 
+            background: rgba(255, 255, 255, 0.2); 
+        }
+
+        /* Dokładne współrzędne dla dymków z Twojego zdjęcia */
+        #rower   { top: 7%;  left: 17%; width: 28%; height: 15%; }
+        #auto    { top: 24%; left: 21%; width: 26%; height: 13%; }
+        #traktor { top: 7%;  right: 18%; width: 26%; height: 15%; }
+        #pomidor { top: 24%; right: 20%; width: 27%; height: 13%; }
+    </style>
+</head>
+<body>
+
+<div class="panorama">
+    <div class="strefa-klik" id="rower"   onclick="window.open('https://www.olx.pl', '_blank')"></div>
+    <div class="strefa-klik" id="auto"    onclick="window.open('https://www.otomoto.pl', '_blank')"></div>
+    <div class="strefa-klik" id="traktor" onclick="window.open('https://www.olx.pl', '_blank')"></div>
+    <div class="strefa-klik" id="pomidor" onclick="window.open('https://www.olx.pl', '_blank')"></div>
+</div>
+
+</body>
+</html>
