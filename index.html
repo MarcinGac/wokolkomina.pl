@@ -3,34 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wokół Komina - Dodaj Ogłoszenie</title>
+    <title>Wokół Komina</title>
     <style>
+        /* Prosty reset, żeby nic nie "skakało" */
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #f5f7fa;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #333;
+            /* TŁO - jeśli plik tlo.png jest na serwerze, to zadziała */
+            background: #87CEEB url('tlo.png') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
         }
 
-        .header-section {
+        .main-card {
             text-align: center;
-            padding: 40px 20px;
-            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 30px;
+            margin: 40px 10px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 95%;
+            max-width: 450px;
         }
 
-        /* Twój komin */
-        .logo-wrapper {
-            margin-bottom: 10px;
-        }
-
-        /* Przycisk */
-        .btn-main {
+        /* Styl przycisku */
+        .cta-button {
             display: inline-block;
             background-color: #c62828;
             color: white;
-            padding: 18px 40px;
-            font-size: 1.2rem;
+            padding: 18px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(198, 40, 40, 0.3);
+        }
+
+        /* Ukryty kontener na Tally */
+        #tally-container {
+            display: none;
+            width: 95%;
+            max-width: 700px;
+            margin-bottom: 50px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Animacja dymu */
+        @keyframes drift {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-30px) translateX(-5px); opacity: 0; }
+        }
+        .smoke-circle { animation: drift 3s infinite ease-in-out; }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <svg viewBox="0 0 200 200" width="160" height="160" style="display: block; margin: 0 auto;">
+            <g transform="rotate(-12 100 120)">
+                <rect x="85" y="70" width="30" height="90" fill="#fff" stroke="#8a1f1f" stroke-width="2"/>
+                <rect x="85" y="70" width="30" height="15" fill="#c62828"/>
+                <rect x="85" y="100" width="30" height="15" fill="#c62828"/>
+                <rect x="85" y="130" width="30" height="15" fill="#c62828"/>
+                <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
+            </g>
+            <circle class="smoke-circle" cx="100" cy="50" r="10" fill="#cccccc" />
+        </svg>
+
+        <button class="cta-button" onclick="showTally()">+ DODAJ OGŁOSZENIE</button>
+    </div>
+
+    <div id="tally-container">
+        <iframe data-tally-src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
+                loading="lazy" width="100%" height="500" frameborder="0" title="Dodaj ogłoszenie"></iframe>
+    </div>
+
+    <script>
+        function showTally() {
+            document.getElementById('tally-container').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+    
+    <script async src="https://tally.so/widgets/embed.js"></script>
+
+</body>
+</html>
