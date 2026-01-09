@@ -3,75 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wokół Komina - Ogłoszenia</title>
+    <title>Wokół Komina - Dodaj Ogłoszenie</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-image: url('tlo.png'); 
-            background-size: cover;
-            background-position: center bottom;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-color: #87CEEB;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
         }
 
-        .content {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            line-height: 1.6;
+        .header-section {
             text-align: center;
+            padding: 40px 20px;
+            width: 100%;
         }
 
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 20px;
+        /* Twój komin */
+        .logo-wrapper {
+            margin-bottom: 10px;
         }
 
-        .opis-portalu {
-            font-size: 1.2em;
-            color: #444;
-            margin-bottom: 30px;
-            padding: 20px;
-            border-left: 5px solid #d35400;
-            background: rgba(211, 84, 0, 0.05);
-            text-align: left;
+        /* Przycisk */
+        .btn-main {
+            display: inline-block;
+            background-color: #c62828;
+            color: white;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
 
-        /* Styl dla formularza Tally */
-        .form-container {
-            margin-top: 30px;
+        .btn-main:hover {
+            background-color: #a52323;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
+        }
+
+        /* Kontener na formularz */
+        #form-wrapper {
+            display: none; /* Ukryty na starcie */
+            width: 95%;
+            max-width: 800px;
+            margin-bottom: 50px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        iframe {
+            display: block;
         }
     </style>
 </head>
 <body>
 
-    <div class="content">
-        <h1>Wokół Komina</h1>
-        
-        <div class="opis-portalu">
-            <p><strong>Witaj! Tu powstaje portal z darmowymi ogłoszeniami. Do zobaczenia wkrótce.</strong></p>
-            <p>Nasza misja to połączenie lokalnej społeczności. Chcemy, aby każdy mógł łatwo i bezpłatnie wystawić to, czego już nie potrzebuje, lub znaleźć usługi w swojej najbliższej okolicy.</p>
+    <div class="header-section">
+        <div class="logo-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="220" height="220">
+              <defs>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.25"/>
+                </filter>
+                <style>
+                  .smoke { animation: smokeUp 3s infinite ease-in-out; transform-origin: center; }
+                  @keyframes smokeUp {
+                    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+                    20%  { opacity: 0.6; }
+                    60%  { opacity: 0.4; }
+                    100% { transform: translateY(-30px) translateX(-10px); opacity: 0; }
+                  }
+                </style>
+              </defs>
+              <g transform="rotate(-12 100 120)" filter="url(#shadow)">
+                <rect x="85" y="70" width="30" height="15" fill="#c62828"/>
+                <rect x="85" y="85" width="30" height="15" fill="#ffffff"/>
+                <rect x="85" y="100" width="30" height="15" fill="#c62828"/>
+                <rect x="85" y="85" width="30" height="15" fill="#ffffff" opacity="0.3"/> <rect x="85" y="115" width="30" height="15" fill="#ffffff"/>
+                <rect x="85" y="130" width="30" height="15" fill="#c62828"/>
+                <rect x="85" y="70" width="30" height="90" rx="4" ry="4" fill="none" stroke="#8a1f1f" stroke-width="2"/>
+                <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
+              </g>
+              <g class="smoke">
+                <circle cx="100" cy="55" r="8" fill="#e0e0e0"/>
+                <circle cx="112" cy="45" r="10" fill="#eeeeee"/>
+                <circle cx="95"  cy="40" r="6" fill="#f5f5f5"/>
+              </g>
+            </svg>
         </div>
 
-        <hr>
-
-        <div class="form-container">
-            <h2>Dodaj swoje ogłoszenie</h2>
-            <iframe data-tally-src="https://tally.so/embed/TWOJ-KOD" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" title="Ogłoszenia"></iframe>
-            <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
-        </div>
-<p style="text-align:center; font-size: 0.8em; color: #777;">
-    Liczba odwiedzin: 
-    <img src="https://hitwebcounter.com/counter/counter.php?page=wokolkomina&style=0006&nbdigits=5&type=page&initCount=0" title="Free Counter" Alt="web counter" border="0" />
-</p>
-
+        <button class="btn-main" onclick="openTally()">+ DODAJ OGŁOSZENIE</button>
     </div>
+
+    <div id="form-wrapper">
+        <iframe data-tally-src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
+                loading="lazy" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" title="Dodaj ogłoszenie">
+        </iframe>
+    </div>
+
+    <script>
+        function openTally() {
+            var wrapper = document.getElementById("form-wrapper");
+            wrapper.style.display = "block";
+            wrapper.scrollIntoView({behavior: "smooth"});
+        }
+    </script>
+    
+    <script async src="https://tally.so/widgets/embed.js"></script>
 
 </body>
 </html>
