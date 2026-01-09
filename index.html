@@ -3,44 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ogłoszenia - Wokół Komina</title>
+    <title>Wokół Komina</title>
     <style>
+        * { box-sizing: border-box; }
         body {
-            margin: 0; padding: 20px;
+            margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
             background: #87CEEB url('tlo.png') no-repeat center center fixed;
             background-size: cover;
             font-family: Arial, sans-serif;
+            min-height: 100vh;
         }
-        .header-nav {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px 25px; border-radius: 50px;
-            margin-bottom: 20px; text-decoration: none;
-            color: #c62828; font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .main-card {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px; margin: 50px 15px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            width: 90%; max-width: 400px;
         }
-        .ads-list { width: 100%; max-width: 500px; }
-        .ad-box {
-            background: white; padding: 20px; margin-bottom: 15px;
-            border-radius: 15px; border-left: 6px solid #c62828;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        h1 { color: #333; margin: 10px 0 25px 0; font-size: 1.8rem; }
+
+        /* PRZYCISKI - TO CZEGO BRAKOWAŁO */
+        .btn {
+            display: block; width: 100%; padding: 18px;
+            margin-bottom: 15px; font-size: 1.1rem; font-weight: bold;
+            text-decoration: none; border-radius: 50px; border: none;
+            cursor: pointer; text-transform: uppercase;
         }
-        .ad-box h2 { margin: 0 0 10px 0; font-size: 1.2rem; color: #333; }
-        .ad-box p { margin: 0; color: #555; font-size: 1rem; line-height: 1.4; }
-        .contact { margin-top: 10px; font-weight: bold; color: #c62828; font-size: 0.9rem; }
+        .btn-view { background: white; color: #c62828; border: 2px solid #c62828; }
+        .btn-add { background: #c62828; color: white; box-shadow: 0 4px 15px rgba(198,40,40,0.3); }
+
+        #tally-box { display: none; width: 95%; max-width: 600px; margin-bottom: 40px; }
+
+        /* KOMIN */
+        @keyframes smoke {
+            0% { transform: translateY(0) scale(1); opacity: 0.5; }
+            100% { transform: translateY(-30px) scale(2); opacity: 0; }
+        }
+        .smoke { animation: smoke 2s infinite; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="header-nav">← WRÓĆ DO DODAWANIA</a>
+    <div class="main-card">
+        <svg viewBox="0 0 200 200" width="140" height="140" style="display: block; margin: 0 auto;">
+            <circle class="smoke" cx="100" cy="50" r="10" fill="#ddd" />
+            <g transform="rotate(-5 100 120)">
+                <rect x="85" y="70" width="30" height="90" fill="#fff" stroke="#8a1f1f" stroke-width="2"/>
+                <rect x="85" y="70" width="30" height="15" fill="#c62828"/>
+                <rect x="80" y="60" width="40" height="15" rx="3" fill="#8a1f1f"/>
+            </g>
+        </svg>
 
-    <div class="ads-list">
-        <div class="ad-box">
-            <h2>Portal "Wokół Komina" startuje!</h2>
-            <p>To jest Twoje pierwsze ogłoszenie. Tutaj będą się pojawiać wpisy od sąsiadów z okolicy.</p>
-            <div class="contact">Kontakt: Administrator</div>
-        </div>
+        <h1>Wokół Komina</h1>
+
+        <a href="ogloszenia.html" class="btn btn-view">ZOBACZ OGŁOSZENIA</a>
+
+        <button class="btn btn-add" onclick="showTally()">+ WSTAW OGŁOSZENIE</button>
     </div>
+
+    <div id="tally-box">
+        <iframe data-tally-src="https://tally.so/embed/kdeoQd?transparentBackground=1&dynamicHeight=1" 
+                width="100%" height="550" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        function showTally() {
+            document.getElementById('tally-box').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+    <script async src="https://tally.so/widgets/embed.js"></script>
 
 </body>
 </html>
