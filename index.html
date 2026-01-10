@@ -24,11 +24,29 @@
             padding: 20px;
             box-sizing: border-box;
         }
+
+        /* KOMIN NA SAMEJ GÓRZE */
         .komin-img {
-            width: 130px;
+            width: 140px;
             height: auto;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
+
+        /* NAPIS POD KOMINEM */
+        .top-promo {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 3px solid #ff0000;
+            color: #ff0000;
+            font-weight: bold;
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            width: 90%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
         .btn-ogloszenia {
             background: #ff0000;
             color: white;
@@ -41,6 +59,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             margin-bottom: 20px;
         }
+
         .tally-box {
             width: 100%;
             background: white;
@@ -48,33 +67,22 @@
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
-        .promo-footer {
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 15px;
-            border: 2px solid #ff0000;
-            color: #ff0000;
-            font-weight: bold;
-            text-align: center;
-            font-size: 16px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="Komin.svg" alt="Komin" class="komin-img">
         
+        <div class="top-promo">
+            Tutaj zostaw swoje całkowicie darmowe ogłoszenie.<br>
+            Ta strona jest stworzona dla Ciebie!
+        </div>
+
         <a href="ogloszenia.html" class="btn-ogloszenia">ZOBACZ AKTUALNE OGŁOSZENIA</a>
 
         <div class="tally-box">
             <iframe src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
                     width="100%" height="500" frameborder="0" title="Wokół Komina"></iframe>
-        </div>
-
-        <div class="promo-footer">
-            Zostaw swoje całkowicie darmowe ogłoszenie.<br>
-            Ta strona jest stworzona dla Ciebie!
         </div>
     </div>
     <script async src="https://tally.so/widgets/embed.js"></script>
