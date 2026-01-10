@@ -1,66 +1,80 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>Ogłoszenia – Wokół Komina</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    /* Tło z Twoim plikiem tlo.png */
-    background: #87CEEB url('tlo.png') no-repeat center fixed;
-    background-size: cover;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  .back-btn {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 12px 25px;
-    border-radius: 50px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    text-decoration: none;
-    color: #c62828;
-    font-weight: bold;
-    transition: 0.3s;
-  }
-  .back-btn:hover { background: white; transform: scale(1.05); }
-
-  .komin-img {
-    width: 80px;
-    height: auto;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-  }
-
-  .wrapper {
-    width: 100%;
-    max-width: 900px;
-    background: white;
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    overflow: hidden; /* Żeby iframe nie wystawał poza zaokrąglone rogi */
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>Ogłoszenia – Wokół Komina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #87CEEB url('tlo.png') no-repeat center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #c62828;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .komin-img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .cta-box {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+        }
+        .main-button {
+            display: inline-block;
+            background: #c62828;
+            color: white;
+            padding: 18px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .main-button:hover {
+            transform: scale(1.05);
+            background: #e53935;
+        }
+        p { color: #555; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
 
-  <a href="index.html" class="back-btn">← Powrót</a>
+    <a href="index.html" class="back-btn">← Powrót</a>
 
-  <img src="komin.svg" alt="Komin" class="komin-img" onerror="this.src='Komin.svg'">
+    <div class="cta-box">
+        <img src="komin.svg" alt="Komin" class="komin-img" onerror="this.src='Komin.svg'">
+        <h2>Tablica Ogłoszeń</h2>
+        <p>Kliknij poniżej, aby zobaczyć aktualne ogłoszenia lub dodać własne.</p>
+        
+        <a href="https://tally.so/summary/kdeoQd" class="main-button">OTWÓRZ OGŁOSZENIA</a>
+    </div>
 
-  <div class="wrapper">
-    <iframe 
-      src="https://tally.so/summary/kdeoQd?embed=1"
-      width="100%" 
-      height="1200" 
-      frameborder="0"
-      style="display: block;">
-    </iframe>
-  </div>
+    <script>
+        // Jeśli chcesz, żeby po wejściu na stronę samo przeniosło po 3 sekundach:
+        // setTimeout(function(){ window.location.href = "https://tally.so/summary/kdeoQd"; }, 3000);
+    </script>
 
 </body>
 </html>
