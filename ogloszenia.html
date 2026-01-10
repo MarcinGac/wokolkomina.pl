@@ -13,68 +13,52 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
+            padding: 20px;
         }
         .back-btn {
-            position: absolute;
-            top: 20px;
             background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
+            padding: 10px 25px;
             border-radius: 50px;
+            margin-bottom: 20px;
             text-decoration: none;
             color: #c62828;
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .komin-img {
-            width: 120px;
+            width: 80px;
             height: auto;
             margin-bottom: 20px;
         }
-        .cta-box {
+        .wrapper {
+            width: 100%;
+            max-width: 900px;
             background: white;
-            padding: 40px;
-            border-radius: 30px;
+            border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 400px;
+            overflow: hidden; /* Zaokrągla rogi iframe */
+            line-height: 0; /* Usuwa dziwną przerwę na dole */
         }
-        .main-button {
-            display: inline-block;
-            background: #c62828;
-            color: white;
-            padding: 18px 30px;
-            border-radius: 15px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 20px;
-            transition: transform 0.2s;
+        iframe {
+            border: none;
+            display: block;
         }
-        .main-button:hover {
-            transform: scale(1.05);
-            background: #e53935;
-        }
-        p { color: #555; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <a href="index.html" class="back-btn">← Powrót</a>
 
-    <div class="cta-box">
-        <img src="komin.svg" alt="Komin" class="komin-img" onerror="this.src='Komin.svg'">
-        <h2>Tablica Ogłoszeń</h2>
-        <p>Kliknij poniżej, aby zobaczyć aktualne ogłoszenia lub dodać własne.</p>
-        
-        <a href="https://tally.so/summary/kdeoQd" class="main-button">OTWÓRZ OGŁOSZENIA</a>
-    </div>
+    <img src="komin.svg" alt="Komin" class="komin-img" onerror="this.src='Komin.svg'">
 
-    <script>
-        // Jeśli chcesz, żeby po wejściu na stronę samo przeniosło po 3 sekundach:
-        // setTimeout(function(){ window.location.href = "https://tally.so/summary/kdeoQd"; }, 3000);
-    </script>
+    <div class="wrapper">
+        <iframe 
+            src="https://tally.so/summary/kdeoQd?embed=1" 
+            width="100%" 
+            height="1000" 
+            frameborder="0">
+        </iframe>
+    </div>
 
 </body>
 </html>
