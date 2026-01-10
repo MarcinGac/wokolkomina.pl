@@ -16,14 +16,24 @@
             align-items: center;
         }
 
-        .komin-container {
-            text-align: center;
-            margin-bottom: 20px;
+        .komin-img {
+            width: 140px;
+            height: auto;
+            margin-bottom: 10px;
         }
 
-        .komin-img {
-            width: 120px;
-            height: auto;
+        /* Przycisk do listy ogłoszeń na górze */
+        .btn-view {
+            background: #ff0000;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            margin-bottom: 25px;
         }
 
         .wrapper {
@@ -33,20 +43,20 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 25px;
         }
 
         iframe {
             width: 100%;
-            height: 700px;
+            height: 650px;
             border: none;
             display: block;
         }
 
-        /* TWÓJ NOWY DOPISZEK */
+        /* Twój nowy dopisek o darmowym ogłoszeniu */
         .promo-footer {
-            margin-top: 25px;
             background: rgba(255, 255, 255, 0.9);
-            padding: 15px 25px;
+            padding: 20px;
             border-radius: 15px;
             border: 3px solid #ff0000;
             color: #ff0000;
@@ -54,22 +64,15 @@
             text-align: center;
             max-width: 90%;
             font-size: 18px;
-            line-height: 1.4;
-        }
-
-        .btn-wyniki {
-            margin-top: 15px;
-            color: white;
-            text-decoration: underline;
-            font-size: 14px;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
-    <div class="komin-container">
-        <img src="Komin.svg" alt="Komin" class="komin-img">
-    </div>
+    <img src="Komin.svg" alt="Komin" class="komin-img">
+
+    <a href="ogloszenia.html" class="btn-view">ZOBACZ WSZYSTKIE OGŁOSZENIA</a>
 
     <div class="wrapper">
         <iframe src="https://tally.so/kdeoQd"></iframe>
@@ -79,8 +82,6 @@
         Zostaw swoje całkowicie darmowe ogłoszenie.<br>
         Ta strona jest stworzona dla Ciebie!
     </div>
-
-    <a href="ogloszenia.html" class="btn-wyniki">Zobacz wszystkie ogłoszenia</a>
 
 </body>
 </html>
