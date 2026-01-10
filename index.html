@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wokół Komina</title>
     <style>
         body {
@@ -17,46 +17,29 @@
         }
 
         .komin-img {
-            width: 140px;
+            width: 150px;
             height: auto;
             margin-bottom: 10px;
         }
 
-        /* Przycisk do listy ogłoszeń na górze */
-        .btn-view {
+        .nav-link {
             background: #ff0000;
             color: white;
-            padding: 15px 30px;
+            padding: 12px 25px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
             border: 2px solid white;
-            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-transform: uppercase;
         }
 
-        .wrapper {
-            width: 100%;
-            max-width: 800px;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin-bottom: 25px;
-        }
-
-        iframe {
-            width: 100%;
-            height: 650px;
-            border: none;
-            display: block;
-        }
-
-        /* Twój nowy dopisek o darmowym ogłoszeniu */
-        .promo-footer {
+        /* Styl dla Twojego nowego dopisku */
+        .footer-promo {
+            margin-top: 25px;
             background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
+            padding: 15px 25px;
             border-radius: 15px;
             border: 3px solid #ff0000;
             color: #ff0000;
@@ -64,7 +47,6 @@
             text-align: center;
             max-width: 90%;
             font-size: 18px;
-            line-height: 1.5;
         }
     </style>
 </head>
@@ -72,16 +54,24 @@
 
     <img src="Komin.svg" alt="Komin" class="komin-img">
 
-    <a href="ogloszenia.html" class="btn-view">ZOBACZ WSZYSTKIE OGŁOSZENIA</a>
+    <a href="ogloszenia.html" class="nav-link">ZOBACZ AKTUALNE OGŁOSZENIA</a>
 
-    <div class="wrapper">
-        <iframe src="https://tally.so/kdeoQd"></iframe>
-    </div>
+    <iframe 
+        src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
+        width="100%" 
+        height="500" 
+        frameborder="0" 
+        marginheight="0" 
+        marginwidth="0" 
+        title="Wokół Komina">
+    </iframe>
 
-    <div class="promo-footer">
+    <div class="footer-promo">
         Zostaw swoje całkowicie darmowe ogłoszenie.<br>
         Ta strona jest stworzona dla Ciebie!
     </div>
+
+    <script async src="https://tally.so/widgets/embed.js"></script>
 
 </body>
 </html>
