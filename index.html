@@ -3,93 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wokół Komina</title>
+    <title>Wokół Komina - Dodaj Ogłoszenie</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background: #87CEEB url('tlo.png') no-repeat center center fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* TŁO STRONY */
+            background-image: url('tlo.png');
             background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-color: #87CEEB; /* kolor zapasowy */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* KOMIN Z MAŁEJ LITERY */
-        .komin-img {
-            width: 160px;
-            height: auto;
-            margin-top: 10px;
-        }
-
-        /* TWÓJ TEKST NA GÓRZE */
-        .promo-header {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px 20px;
-            border-radius: 15px;
-            border: 3px solid #ff0000;
-            color: #ff0000;
+        /* STYL DLA TWOJEGO NOWEGO DOPISEKU */
+        .promo-top {
+            color: #c62828;
             font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px white;
+        }
+
+        .header-section {
             text-align: center;
-            font-size: 18px;
-            margin: 15px 0;
-            width: 90%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        /* PRZYCISK DO LISTY */
-        .btn-view {
-            background: #ff0000;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            border: 2px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-        }
-
-        /* FORMULARZ */
-        .tally-container {
+            padding: 40px 20px;
             width: 100%;
+            background: rgba(255, 255, 255, 0.8); /* Lekkie rozmycie tła pod logiem */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-wrapper {
+            margin-bottom: 10px;
+        }
+
+        /* STYL DLA TWOJEGO PLIKU KOMIN.SVG */
+        .komin-img {
+            width: 200px;
+            height: auto;
+        }
+
+        .btn-main {
+            display: inline-block;
+            background-color: #c62828;
+            color: white;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn-main:hover {
+            background-color: #a52323;
+            transform: translateY(-2px);
+        }
+
+        #form-wrapper {
+            display: none;
+            width: 95%;
+            max-width: 800px;
+            margin: 30px 0 50px 0;
             background: white;
             border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="komin.svg" alt="komin" class="komin-img">
-        
-        <div class="promo-header">
+    <div class="header-section">
+        <div class="promo-top">
             Tutaj zostaw swoje całkowicie darmowe ogłoszenie.<br>
             Ta strona jest stworzona dla Ciebie!
         </div>
 
-        <a href="ogloszenia.html" class="btn-view">ZOBACZ AKTUALNE OGŁOSZENIA</a>
-
-        <div class="tally-container">
-            <iframe src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
-                    width="100%" height="500" frameborder="0" title="Wokół Komina"></iframe>
+        <div class="logo-wrapper">
+            <img src="komin.svg" alt="Wokół Komina" class="komin-img">
         </div>
+
+        <button class="btn-main" onclick="openTally()">+ DODAJ OGŁOSZENIE</button>
     </div>
 
+    <div id="form-wrapper">
+        <iframe data-tally-src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
+                loading="lazy" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0" title="Dodaj ogłoszenie">
+        </iframe>
+    </div>
+
+    <script>
+        function openTally() {
+            var wrapper = document.getElementById("form-wrapper");
+            wrapper.style.display = "block";
+            wrapper.scrollIntoView({behavior: "smooth"});
+        }
+    </script>
     <script async src="https://tally.so/widgets/embed.js"></script>
 
 </body>
