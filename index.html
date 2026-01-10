@@ -8,81 +8,58 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial Black', Gadget, sans-serif;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            /* To jest tło z Twoją kulą ziemską */
             background: #87CEEB url('tlo.png') no-repeat center center fixed;
             background-size: cover;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
         .komin-img {
-            width: 160px;
+            width: 150px; /* Rozmiar Twojego komina */
             height: auto;
             margin-bottom: 20px;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
         }
 
-        .btn-ogloszenia {
-            background: #ff0000;
+        .btn-main {
+            background-color: #ff0000; /* Czerwony przycisk */
             color: white;
-            padding: 22px 45px;
+            padding: 20px 40px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 22px;
+            font-size: 20px;
             text-transform: uppercase;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            transition: 0.3s;
-            border: 3px solid white;
-            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid white;
         }
 
-        .btn-ogloszenia:hover {
-            transform: scale(1.05);
-            background: #e60000;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-        }
-
-        .promo-box {
-            margin-top: 40px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px 30px;
-            border-radius: 20px;
-            border: 3px solid #ff0000;
-            max-width: 80%;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .promo-box h2 {
+        /* Sekcja na Twój nowy dopisek */
+        .description {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px 25px;
+            border-radius: 15px;
             color: #ff0000;
-            margin: 0 0 10px 0;
-            font-size: 24px;
-            text-transform: uppercase;
-        }
-
-        .promo-box p {
-            color: #333;
-            margin: 0;
-            font-size: 18px;
             font-weight: bold;
-            line-height: 1.4;
+            text-align: center;
+            border: 2px solid #ff0000;
         }
     </style>
 </head>
 <body>
 
-    <img src="Komin.svg" alt="Komin" class="komin-img">
+    <img src="komin.svg" alt="komin" class="komin-img">
 
-    <a href="ogloszenia.html" class="btn-ogloszenia">DODAJ LUB PRZEGLĄDAJ OGŁOSZENIA</a>
+    <a href="ogloszenia.html" class="btn-main">Dodaj lub przeglądaj ogłoszenia</a>
 
-    <div class="promo-box">
-        <h2>Darmowe Ogłoszenia</h2>
-        <p>Zostaw swoje całkowicie darmowe ogłoszenie.<br>Ta strona jest stworzona dla Ciebie!</p>
+    <div class="description">
+        Zostaw swoje całkowicie darmowe ogłoszenie.<br>
+        Ta strona jest stworzona dla Ciebie!
     </div>
 
 </body>
