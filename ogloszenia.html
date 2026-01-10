@@ -1,66 +1,66 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ogłoszenia - Wokół Komina</title>
-    <style>
-        body {
-            margin: 0; padding: 20px;
-            display: flex; flex-direction: column; align-items: center;
-            background: #87CEEB url('tlo.png') no-repeat center center fixed;
-            background-size: cover;
-            font-family: Arial, sans-serif;
-        }
-        .header {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px 30px; border-radius: 50px;
-            margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-decoration: none; color: #c62828; font-weight: bold;
-            z-index: 10;
-        }
+<meta charset="UTF-8">
+<title>Ogłoszenia – Wokół Komina</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    /* Tło z Twoim plikiem tlo.png */
+    background: #87CEEB url('tlo.png') no-repeat center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .back-btn {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 12px 25px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-decoration: none;
+    color: #c62828;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  .back-btn:hover { background: white; transform: scale(1.05); }
 
-        /* Twój Komin SVG */
-        .komin-container {
-            margin-bottom: 20px;
-        }
-        .komin-img {
-            width: 80px; /* Dostosuj wielkość komina */
-            height: auto;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-        }
+  .komin-img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  }
 
-        .ads-container { 
-            width: 100%; 
-            max-width: 800px; 
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        
-        iframe {
-            display: block;
-        }
-    </style>
+  .wrapper {
+    width: 100%;
+    max-width: 900px;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden; /* Żeby iframe nie wystawał poza zaokrąglone rogi */
+  }
+</style>
 </head>
 <body>
 
-    <a href="index.html" class="header">← POWRÓT DO STRONY GŁÓWNEJ</a>
-class
-    <div ="komin-container">
-        <img src="komin.svg" alt="Komin" class="komin-img">
-    </div>
+  <a href="index.html" class="back-btn">← Powrót</a>
 
-    <div class="ads-container">
-        <iframe 
-            src="https://tally.so/summary/kdeoQd?embed=1" 
-            width="100%" 
-            height="800" 
-            frameborder="0" 
-            title="Ogłoszenia">
-        </iframe>
-    </div>
+  <img src="komin.svg" alt="Komin" class="komin-img" onerror="this.src='Komin.svg'">
+
+  <div class="wrapper">
+    <iframe 
+      src="https://tally.so/summary/kdeoQd?embed=1"
+      width="100%" 
+      height="1200" 
+      frameborder="0"
+      style="display: block;">
+    </iframe>
+  </div>
 
 </body>
 </html>
