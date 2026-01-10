@@ -7,60 +7,80 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
-            height: 100vh;
+            padding: 20px;
             font-family: Arial, sans-serif;
-            /* To jest tło z Twoją kulą ziemską */
             background: #87CEEB url('tlo.png') no-repeat center center fixed;
             background-size: cover;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
-        .komin-img {
-            width: 150px; /* Rozmiar Twojego komina */
-            height: auto;
+        .komin-container {
+            text-align: center;
             margin-bottom: 20px;
         }
 
-        .btn-main {
-            background-color: #ff0000; /* Czerwony przycisk */
-            color: white;
-            padding: 20px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 20px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 2px solid white;
+        .komin-img {
+            width: 120px;
+            height: auto;
         }
 
-        /* Sekcja na Twój nowy dopisek */
-        .description {
-            margin-top: 30px;
-            background: rgba(255, 255, 255, 0.8);
+        .wrapper {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+            display: block;
+        }
+
+        /* TWÓJ NOWY DOPISZEK */
+        .promo-footer {
+            margin-top: 25px;
+            background: rgba(255, 255, 255, 0.9);
             padding: 15px 25px;
             border-radius: 15px;
+            border: 3px solid #ff0000;
             color: #ff0000;
             font-weight: bold;
             text-align: center;
-            border: 2px solid #ff0000;
+            max-width: 90%;
+            font-size: 18px;
+            line-height: 1.4;
+        }
+
+        .btn-wyniki {
+            margin-top: 15px;
+            color: white;
+            text-decoration: underline;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <img src="komin.svg" alt="komin" class="komin-img">
+    <div class="komin-container">
+        <img src="Komin.svg" alt="Komin" class="komin-img">
+    </div>
 
-    <a href="ogloszenia.html" class="btn-main">Dodaj lub przeglądaj ogłoszenia</a>
+    <div class="wrapper">
+        <iframe src="https://tally.so/kdeoQd"></iframe>
+    </div>
 
-    <div class="description">
+    <div class="promo-footer">
         Zostaw swoje całkowicie darmowe ogłoszenie.<br>
         Ta strona jest stworzona dla Ciebie!
     </div>
+
+    <a href="ogloszenia.html" class="btn-wyniki">Zobacz wszystkie ogłoszenia</a>
 
 </body>
 </html>
