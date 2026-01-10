@@ -20,48 +20,14 @@
             z-index: 10;
         }
 
-        /* Postać i Komin */
-        .character-box {
-            display: flex;
-            align-items: flex-end;
-            margin-bottom: 10px;
-            gap: 10px;
+        /* Twój Komin SVG */
+        .komin-container {
+            margin-bottom: 20px;
         }
-        .ludzik {
-            font-size: 50px;
-            position: relative;
-            animation: wink 3s infinite;
-        }
-        .komin-mini {
-            width: 40px;
-            height: 60px;
-            background: #c62828;
-            border: 3px solid #333;
-            position: relative;
-            border-radius: 3px;
-        }
-        .komin-mini::after {
-            content: '';
-            position: absolute;
-            top: 5px; left: -5px; width: 50px; height: 10px;
-            background: #b02424; border: 3px solid #333;
-        }
-        .dym {
-            position: absolute;
-            top: -20px; left: 15px;
-            font-size: 20px;
-            animation: smoke 2s infinite;
-            opacity: 0;
-        }
-
-        @keyframes wink {
-            0%, 90%, 100% { opacity: 1; }
-            95% { opacity: 0.5; }
-        }
-        @keyframes smoke {
-            0% { transform: translateY(0); opacity: 0; }
-            50% { opacity: 0.7; }
-            100% { transform: translateY(-30px); opacity: 0; }
+        .komin-img {
+            width: 80px; /* Dostosuj wielkość komina */
+            height: auto;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
         }
 
         .ads-container { 
@@ -72,17 +38,18 @@
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
+        
+        iframe {
+            display: block;
+        }
     </style>
 </head>
 <body>
 
     <a href="index.html" class="header">← POWRÓT DO STRONY GŁÓWNEJ</a>
 
-    <div class="character-box">
-        <div class="ludzik">😉<span style="font-size: 20px;">👍</span></div>
-        <div class="komin-mini">
-            <div class="dym">☁️</div>
-        </div>
+    <div class="komin-container">
+        <img src="Komin.svg" alt="Komin" class="komin-img">
     </div>
 
     <div class="ads-container">
