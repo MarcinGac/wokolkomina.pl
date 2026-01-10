@@ -15,6 +15,7 @@
             flex-direction: column;
             align-items: center;
         }
+
         .container {
             width: 100%;
             max-width: 600px;
@@ -25,15 +26,15 @@
             box-sizing: border-box;
         }
 
-        /* KOMIN NA SAMEJ GÓRZE */
+        /* KOMIN Z MAŁEJ LITERY */
         .komin-img {
-            width: 140px;
+            width: 160px;
             height: auto;
-            margin-bottom: 15px;
+            margin-top: 10px;
         }
 
-        /* NAPIS POD KOMINEM */
-        .top-promo {
+        /* TWÓJ TEKST NA GÓRZE */
+        .promo-header {
             background: rgba(255, 255, 255, 0.9);
             padding: 15px 20px;
             border-radius: 15px;
@@ -42,12 +43,13 @@
             font-weight: bold;
             text-align: center;
             font-size: 18px;
-            margin-bottom: 20px;
+            margin: 15px 0;
             width: 90%;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .btn-ogloszenia {
+        /* PRZYCISK DO LISTY */
+        .btn-view {
             background: #ff0000;
             color: white;
             padding: 12px 25px;
@@ -60,7 +62,8 @@
             margin-bottom: 20px;
         }
 
-        .tally-box {
+        /* FORMULARZ */
+        .tally-container {
             width: 100%;
             background: white;
             border-radius: 20px;
@@ -70,21 +73,24 @@
     </style>
 </head>
 <body>
+
     <div class="container">
-        <img src="Komin.svg" alt="Komin" class="komin-img">
+        <img src="komin.svg" alt="komin" class="komin-img">
         
-        <div class="top-promo">
+        <div class="promo-header">
             Tutaj zostaw swoje całkowicie darmowe ogłoszenie.<br>
             Ta strona jest stworzona dla Ciebie!
         </div>
 
-        <a href="ogloszenia.html" class="btn-ogloszenia">ZOBACZ AKTUALNE OGŁOSZENIA</a>
+        <a href="ogloszenia.html" class="btn-view">ZOBACZ AKTUALNE OGŁOSZENIA</a>
 
-        <div class="tally-box">
+        <div class="tally-container">
             <iframe src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
                     width="100%" height="500" frameborder="0" title="Wokół Komina"></iframe>
         </div>
     </div>
+
     <script async src="https://tally.so/widgets/embed.js"></script>
+
 </body>
 </html>
