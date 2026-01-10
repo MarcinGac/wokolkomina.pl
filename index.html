@@ -7,45 +7,47 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             font-family: Arial, sans-serif;
             background: #87CEEB url('tlo.png') no-repeat center center fixed;
             background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
 
+        /* KLUCZOWY ELEMENT: KOMIN */
         .komin-img {
-            width: 150px;
+            width: 180px;
             height: auto;
-            margin-bottom: 10px;
+            margin-top: 20px;
         }
 
-        .nav-link {
+        /* ODNOŚNIK NA GÓRZE */
+        .btn-link {
+            display: inline-block;
             background: #ff0000;
             color: white;
-            padding: 12px 25px;
+            padding: 15px 30px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin: 20px 0;
             border: 2px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            text-transform: uppercase;
         }
 
-        /* Styl dla Twojego nowego dopisku */
-        .footer-promo {
-            margin-top: 25px;
+        /* FORMULARZ TALLY - PEŁNA SZEROKOŚĆ */
+        iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+        }
+
+        /* DOPISZEK NA SAMYM DOLE */
+        .footer-text {
             background: rgba(255, 255, 255, 0.9);
-            padding: 15px 25px;
-            border-radius: 15px;
-            border: 3px solid #ff0000;
             color: #ff0000;
+            padding: 20px;
             font-weight: bold;
-            text-align: center;
-            max-width: 90%;
+            border-top: 4px solid #ff0000;
             font-size: 18px;
         }
     </style>
@@ -54,24 +56,15 @@
 
     <img src="Komin.svg" alt="Komin" class="komin-img">
 
-    <a href="ogloszenia.html" class="nav-link">ZOBACZ AKTUALNE OGŁOSZENIA</a>
+    <br>
+    <a href="ogloszenia.html" class="btn-link">ZOBACZ WSZYSTKIE OGŁOSZENIA</a>
 
-    <iframe 
-        src="https://tally.so/embed/kdeoQd?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
-        width="100%" 
-        height="500" 
-        frameborder="0" 
-        marginheight="0" 
-        marginwidth="0" 
-        title="Wokół Komina">
-    </iframe>
+    <iframe src="https://tally.so/kdeoQd"></iframe>
 
-    <div class="footer-promo">
+    <div class="footer-text">
         Zostaw swoje całkowicie darmowe ogłoszenie.<br>
         Ta strona jest stworzona dla Ciebie!
     </div>
-
-    <script async src="https://tally.so/widgets/embed.js"></script>
 
 </body>
 </html>
