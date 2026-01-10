@@ -1,70 +1,111 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wokół Komina</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: #87CEEB url('tlo.png') no-repeat center center fixed;
-            background-size: cover;
-            text-align: center;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wokół Komina</title>
 
-        /* KLUCZOWY ELEMENT: KOMIN */
-        .komin-img {
-            width: 180px;
-            height: auto;
-            margin-top: 20px;
-        }
+<script async src="https://tally.so/widgets/embed.js"></script>
 
-        /* ODNOŚNIK NA GÓRZE */
-        .btn-link {
-            display: inline-block;
-            background: #ff0000;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin: 20px 0;
-            border: 2px solid white;
-        }
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #87CEEB url("tlo.png") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        /* FORMULARZ TALLY - PEŁNA SZEROKOŚĆ */
-        iframe {
-            width: 100%;
-            height: 800px;
-            border: none;
-        }
+.card {
+    margin-top: 40px;
+    background: rgba(255,255,255,0.95);
+    padding: 30px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
 
-        /* DOPISZEK NA SAMYM DOLE */
-        .footer-text {
-            background: rgba(255, 255, 255, 0.9);
-            color: #ff0000;
-            padding: 20px;
-            font-weight: bold;
-            border-top: 4px solid #ff0000;
-            font-size: 18px;
-        }
-    </style>
+.card img {
+    width: 140px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    margin: 10px 0 25px;
+    color: #333;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 15px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    border-radius: 50px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-view {
+    background: white;
+    color: #c62828;
+    border: 2px solid #c62828;
+}
+
+.btn-add {
+    background: #c62828;
+    color: white;
+    border: none;
+}
+
+#form-box {
+    display: none;
+    width: 95%;
+    max-width: 700px;
+    margin: 40px auto;
+}
+</style>
 </head>
+
 <body>
 
-    <img src="Komin.svg" alt="Komin" class="komin-img">
+<div class="card">
+    <!-- KOMIN -->
+    <img src="komin.svg" alt="Komin Wokół Komina">
 
-    <br>
-    <a href="ogloszenia.html" class="btn-link">ZOBACZ WSZYSTKIE OGŁOSZENIA</a>
+    <h1>Wokół Komina</h1>
 
-    <iframe src="https://tally.so/kdeoQd"></iframe>
+    <a href="ogloszenia.html" class="btn btn-view">
+        ZOBACZ OGŁOSZENIA
+    </a>
 
-    <div class="footer-text">
-        Zostaw swoje całkowicie darmowe ogłoszenie.<br>
-        Ta strona jest stworzona dla Ciebie!
-    </div>
+    <button class="btn btn-add" onclick="showForm()">
+        + WSTAW OGŁOSZENIE
+    </button>
+</div>
+
+<!-- FORMULARZ -->
+<div id="form-box">
+    <iframe 
+        data-tally-src="https://tally.so/r/kdeoQd?transparentBackground=1"
+        width="100%" 
+        height="650"
+        frameborder="0">
+    </iframe>
+</div>
+
+<script>
+function showForm() {
+    document.getElementById("form-box").style.display = "block";
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+</script>
 
 </body>
 </html>
